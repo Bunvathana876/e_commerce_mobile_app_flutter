@@ -1,0 +1,339 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../core/utils/page_transitions.dart';
+import '../../cart/providers/cart_provider.dart';
+import '../../cart/screens/cart_screen.dart';
+import '../../products/models/product_model.dart';
+import '../../products/providers/product_provider.dart';
+import '../../products/screens/product_detail_screen.dart';
+import '../../products/widgets/product_card.dart';
+import '../models/category_model.dart';
+
+class CategoryProductsScreen extends StatefulWidget {
+  final CategoryModel category;
+
+  const CategoryProductsScreen({super.key, required this.category});
+
+  @override
+  State<CategoryProductsScreen> createState() => _CategoryProductsScreenState();
+}
+
+class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
+  String _searchQuery = '';
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final productProvider = context.watch<ProductProvider>();
+    final cartProvider = context.watch<CartProvider>();
+
+    // 1. Filter products specifically for this category
+    final List<ProductModel> categoryProducts =
+        productProvider.allProducts.where((product) {
+      final matchesCategory =
+          widget.category.id == 0 || product.categoryId == widget.category.id;
+      final matchesSearch =
+          _searchQuery.isEmpty ||
+          product.name.toLowerCase().contains(_searchQuery.toLowerCase());
+      return matchesCategory && matchesSearch;
+    }).toList();
+
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Stack(
+        children: [
+          // Universal Background Wallpaper
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/bg_all_screens.jpeg',
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          // Content
+          SafeArea(
+            child: CustomScrollView(
+              slivers: [
+                // Top Custom App Bar
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                    child: Row(
+                      children: [
+                        // Back Button
+                        GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          behavior: HitTestBehavior.opaque,
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.9),
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.08),
+                                  blurRadius: 8,
+                                ),
+                              ],
+                            ),
+                            child: const Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                              size: 18,
+                              color: Color(0xFF1E293B),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 14),
+
+                        // Title & Icon
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    widget.category.icon,
+                                    style: const TextStyle(fontSize: 18),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Flexible(
+                                    child: Text(
+                                      widget.category.name,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w800,
+                                        color: Color(0xFF0F172A),
+                                        letterSpacing: -0.4,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                '${categoryProducts.length} items available',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey.shade600,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Cart Button with badge
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              SmoothPageRoute(
+                                page: const CartScreen(),
+                              ),
+                            );
+                          },
+                          behavior: HitTestBehavior.opaque,
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.9),
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withValues(alpha: 0.08),
+                                      blurRadius: 8,
+                                    ),
+                                  ],
+                                ),
+                                child: const Icon(
+                                  Icons.shopping_bag_outlined,
+                                  size: 19,
+                                  color: Color(0xFF1E293B),
+                                ),
+                              ),
+                              if (cartProvider.totalItemsCount > 0)
+                                Positioned(
+                                  top: -2,
+                                  right: -2,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: const BoxDecoration(
+                                      color: Color(0xFFEF4444),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    constraints: const BoxConstraints(
+                                      minWidth: 16,
+                                      minHeight: 16,
+                                    ),
+                                    child: Text(
+                                      '${cartProvider.totalItemsCount}',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 9,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // In-Department Search Bar
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 14),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.03),
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                      child: TextField(
+                        controller: _searchController,
+                        onChanged: (val) =>
+                            setState(() => _searchQuery = val.trim()),
+                        decoration: InputDecoration(
+                          hintText: 'Search in ${widget.category.name}...',
+                          hintStyle: TextStyle(
+                            fontSize: 13.5,
+                            color: Colors.grey.shade400,
+                          ),
+                          prefixIcon: Icon(
+                            Icons.search_rounded,
+                            color: Colors.grey.shade500,
+                          ),
+                          suffixIcon: _searchQuery.isNotEmpty
+                              ? IconButton(
+                                  icon: const Icon(
+                                    Icons.close_rounded,
+                                    size: 18,
+                                  ),
+                                  onPressed: () {
+                                    _searchController.clear();
+                                    setState(() => _searchQuery = '');
+                                  },
+                                )
+                              : null,
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 14,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // 2-Column Product Grid or Empty State
+                if (categoryProducts.isEmpty)
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF1E88E5).withValues(alpha: 0.08),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.inventory_2_outlined,
+                              size: 56,
+                              color: Color(0xFF1E88E5),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            _searchQuery.isNotEmpty
+                                ? 'No results for "$_searchQuery"'
+                                : 'No products in this department yet',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF0F172A),
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            'Check back later for new arrivals',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                else
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(20, 6, 20, 28),
+                    sliver: SliverGrid(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.58,
+                            crossAxisSpacing: 14,
+                            mainAxisSpacing: 14,
+                          ),
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final item = categoryProducts[index];
+                        return ProductCard(
+                          product: item,
+                          onTap: () {
+                            Navigator.of(context).push(
+                              SmoothPageRoute(
+                                page: ProductDetailScreen(product: item),
+                              ),
+                            );
+                          },
+                          onToggleFavorite: () =>
+                              productProvider.toggleFavorite(item.id),
+                          onAddToCart: () {
+                            cartProvider.addItem(item, quantity: 1);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Added ${item.name} to cart!'),
+                                duration: const Duration(seconds: 1),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                          },
+                        );
+                      }, childCount: categoryProducts.length),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
