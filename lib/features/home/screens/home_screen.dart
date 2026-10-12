@@ -20,6 +20,7 @@ class HomeScreen extends StatelessWidget {
     final categoryProvider = context.watch<CategoryProvider>();
     final user = authProvider.currentUser;
     final products = productProvider.filteredProducts;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -42,10 +43,12 @@ class HomeScreen extends StatelessWidget {
                           children: [
                             Text(
                               'Hello, ${user?.fullName ?? "Shopper"} 👋',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w800,
-                                color: Color(0xFF0F172A),
+                                color: isDark
+                                    ? Colors.white
+                                    : const Color(0xFF0F172A),
                               ),
                             ),
                             const SizedBox(height: 2),
@@ -53,7 +56,9 @@ class HomeScreen extends StatelessWidget {
                               'What are you looking for today?',
                               style: TextStyle(
                                 fontSize: 13,
-                                color: Colors.black,
+                                color: isDark
+                                    ? Colors.grey.shade400
+                                    : Colors.black,
                               ),
                             ),
                           ],
@@ -62,14 +67,22 @@ class HomeScreen extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: isDark
+                                ? const Color(0xFF1E293B)
+                                : Colors.white,
                             borderRadius: BorderRadius.circular(14),
-                            border: Border.all(color: const Color(0xFFE2E8F0)),
+                            border: Border.all(
+                              color: isDark
+                                  ? const Color(0xFF334155)
+                                  : const Color(0xFFE2E8F0),
+                            ),
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.notifications_none_rounded,
                             size: 22,
-                            color: Color(0xFF1E293B),
+                            color: isDark
+                                ? Colors.white
+                                : const Color(0xFF1E293B),
                           ),
                         ),
                       ],
@@ -79,27 +92,45 @@ class HomeScreen extends StatelessWidget {
                     // Search Input Box
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: isDark
+                            ? const Color(0xFF1E293B)
+                            : Colors.white,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                        border: Border.all(
+                          color: isDark
+                              ? const Color(0xFF334155)
+                              : const Color(0xFFE2E8F0),
+                        ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.02),
+                            color: Colors.black.withValues(
+                              alpha: isDark ? 0.2 : 0.02,
+                            ),
                             blurRadius: 10,
                           ),
                         ],
                       ),
                       child: TextField(
                         onChanged: productProvider.setSearchQuery,
+                        style: TextStyle(
+                          color: isDark
+                              ? Colors.white
+                              : const Color(0xFF0F172A),
+                          fontSize: 14,
+                        ),
                         decoration: InputDecoration(
                           hintText: 'Search products, brands, gear...',
                           hintStyle: TextStyle(
                             fontSize: 14,
-                            color: Colors.grey.shade400,
+                            color: isDark
+                                ? Colors.grey.shade500
+                                : Colors.grey.shade400,
                           ),
                           prefixIcon: Icon(
                             Icons.search_rounded,
-                            color: Colors.grey.shade500,
+                            color: isDark
+                                ? Colors.grey.shade400
+                                : Colors.grey.shade500,
                           ),
                           suffixIcon: Container(
                             margin: const EdgeInsets.all(6),
@@ -206,19 +237,23 @@ class HomeScreen extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           'Categories',
                           style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w800,
-                            color: Color(0xFF0F172A),
+                            color: isDark
+                                ? Colors.white
+                                : const Color(0xFF0F172A),
                           ),
                         ),
                         Text(
                           'Swipe for more',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey.shade500,
+                            color: isDark
+                                ? Colors.grey.shade400
+                                : Colors.grey.shade500,
                           ),
                         ),
                       ],
@@ -261,11 +296,15 @@ class HomeScreen extends StatelessWidget {
                                   padding: const EdgeInsets.all(2.5),
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: Colors.white,
+                                    color: isDark
+                                        ? const Color(0xFF1E293B)
+                                        : Colors.white,
                                     border: Border.all(
                                       color: isSelected
                                           ? const Color(0xFF1E88E5)
-                                          : const Color(0xFFE2E8F0),
+                                          : (isDark
+                                              ? const Color(0xFF334155)
+                                              : const Color(0xFFE2E8F0)),
                                       width: isSelected ? 2.5 : 1.2,
                                     ),
                                     boxShadow: [
@@ -275,7 +314,7 @@ class HomeScreen extends StatelessWidget {
                                                 0xFF1E88E5,
                                               ).withValues(alpha: 0.28)
                                             : Colors.black.withValues(
-                                                alpha: 0.04,
+                                                alpha: isDark ? 0.2 : 0.04,
                                               ),
                                         blurRadius: isSelected ? 8 : 4,
                                         offset: const Offset(0, 2),
@@ -293,9 +332,9 @@ class HomeScreen extends StatelessWidget {
                                                     return child;
                                                   }
                                                   return Container(
-                                                    color: const Color(
-                                                      0xFFF1F5F9,
-                                                    ),
+                                                    color: isDark
+                                                        ? const Color(0xFF0F172A)
+                                                        : const Color(0xFFF1F5F9),
                                                     child: const Center(
                                                       child: SizedBox(
                                                         width: 14,
@@ -310,9 +349,9 @@ class HomeScreen extends StatelessWidget {
                                                 },
                                             errorBuilder: (_, _, _) =>
                                                 Container(
-                                                  color: const Color(
-                                                    0xFFE2E8F0,
-                                                  ),
+                                                  color: isDark
+                                                      ? const Color(0xFF1E293B)
+                                                      : const Color(0xFFE2E8F0),
                                                   alignment: Alignment.center,
                                                   child: Text(
                                                     category.icon,
@@ -323,7 +362,9 @@ class HomeScreen extends StatelessWidget {
                                                 ),
                                           )
                                         : Container(
-                                            color: const Color(0xFFE2E8F0),
+                                            color: isDark
+                                                ? const Color(0xFF1E293B)
+                                                : const Color(0xFFE2E8F0),
                                             alignment: Alignment.center,
                                             child: Text(
                                               category.icon,
@@ -349,7 +390,9 @@ class HomeScreen extends StatelessWidget {
                                         : FontWeight.w500,
                                     color: isSelected
                                         ? const Color(0xFF1E88E5)
-                                        : const Color(0xFF334155),
+                                        : (isDark
+                                            ? Colors.grey.shade300
+                                            : const Color(0xFF334155)),
                                   ),
                                 ),
                               ],
@@ -370,19 +413,23 @@ class HomeScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Popular Items',
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w800,
-                        color: Color(0xFF0F172A),
+                        color: isDark
+                            ? Colors.white
+                            : const Color(0xFF0F172A),
                       ),
                     ),
                     Text(
                       '${products.length} found',
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.grey.shade500,
+                        color: isDark
+                            ? Colors.grey.shade400
+                            : Colors.grey.shade500,
                       ),
                     ),
                   ],
@@ -392,12 +439,14 @@ class HomeScreen extends StatelessWidget {
 
             // 5. 2-Column Product Grid
             if (products.isEmpty)
-              const SliverFillRemaining(
+              SliverFillRemaining(
                 hasScrollBody: false,
                 child: Center(
                   child: Text(
                     'No products found matching your search.',
-                    style: TextStyle(color: Colors.grey),
+                    style: TextStyle(
+                      color: isDark ? Colors.grey.shade400 : Colors.grey,
+                    ),
                   ),
                 ),
               )

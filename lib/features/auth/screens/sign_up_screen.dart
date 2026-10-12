@@ -51,6 +51,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       body: Stack(
@@ -65,7 +66,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
           // 2. Subtle gradient overlay to keep inputs readable
           Positioned.fill(
-            child: Container(color: Colors.black.withValues(alpha: 0.15)),
+            child: Container(
+              color: Colors.black.withValues(alpha: isDark ? 0.45 : 0.15),
+            ),
           ),
 
           // 3. Back Button in Safe Area
@@ -79,8 +82,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.9),
+                      color:
+                          isDark
+                              ? const Color(0xFF1E293B).withValues(alpha: 0.9)
+                              : Colors.white.withValues(alpha: 0.9),
                       shape: BoxShape.circle,
+                      border:
+                          isDark
+                              ? Border.all(color: const Color(0xFF334155))
+                              : null,
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.1),
@@ -88,10 +98,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ],
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.arrow_back_ios_new_rounded,
                       size: 18,
-                      color: Color(0xFF1E293B),
+                      color: isDark ? Colors.white : const Color(0xFF1E293B),
                     ),
                   ),
                 ),
@@ -107,11 +117,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 constraints: const BoxConstraints(maxWidth: 420),
                 padding: const EdgeInsets.all(26),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.96),
+                  color:
+                      isDark
+                          ? const Color(0xFF1E293B).withValues(alpha: 0.96)
+                          : Colors.white.withValues(alpha: 0.96),
                   borderRadius: BorderRadius.circular(28),
+                  border:
+                      isDark
+                          ? Border.all(
+                            color: const Color(0xFF334155),
+                            width: 1.2,
+                          )
+                          : null,
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF0F172A).withValues(alpha: 0.18),
+                      color: const Color(
+                        0xFF0F172A,
+                      ).withValues(alpha: isDark ? 0.35 : 0.18),
                       blurRadius: 30,
                       offset: const Offset(0, 10),
                     ),
@@ -124,21 +146,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       // Header Title
-                      const Text(
+                      Text(
                         'Create Account',
                         style: TextStyle(
                           fontSize: 26,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFF1E293B),
+                          color:
+                              isDark ? Colors.white : const Color(0xFF1E293B),
                           letterSpacing: -0.5,
                         ),
                       ),
                       const SizedBox(height: 6),
-                      const Text(
+                      Text(
                         'Join Blue Panda today and discover great deals.',
                         style: TextStyle(
                           fontSize: 13,
-                          color: Color(0xFF64748B),
+                          color:
+                              isDark
+                                  ? Colors.grey.shade400
+                                  : const Color(0xFF64748B),
                           height: 1.35,
                         ),
                       ),
@@ -149,10 +175,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         controller: _nameController,
                         label: 'Full Name',
                         prefixIcon: Icons.person_outline,
-                        validator: (value) =>
-                            (value == null || value.trim().isEmpty)
-                                ? 'Enter your full name'
-                                : null,
+                        validator:
+                            (value) =>
+                                (value == null || value.trim().isEmpty)
+                                    ? 'Enter your full name'
+                                    : null,
                       ),
                       const SizedBox(height: 14),
 
@@ -180,9 +207,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 : Icons.visibility,
                             size: 20,
                           ),
-                          onPressed: () => setState(
-                            () => _obscurePassword = !_obscurePassword,
-                          ),
+                          onPressed:
+                              () => setState(
+                                () => _obscurePassword = !_obscurePassword,
+                              ),
                         ),
                       ),
                       const SizedBox(height: 14),
@@ -240,7 +268,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           Text(
                             'Already have an account?',
                             style: TextStyle(
-                              color: Colors.grey.shade600,
+                              color:
+                                  isDark
+                                      ? Colors.grey.shade400
+                                      : Colors.grey.shade600,
                               fontSize: 13,
                             ),
                           ),

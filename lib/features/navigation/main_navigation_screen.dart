@@ -23,6 +23,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     final cartCount = context.watch<CartProvider>().totalItemsCount;
     final favCount = context.watch<ProductProvider>().totalFavoritesCount;
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     final screens = [
       const HomeScreen(),
       CategoriesScreen(
@@ -47,6 +49,12 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               fit: BoxFit.cover,
             ),
           ),
+          if (isDark)
+            Positioned.fill(
+              child: Container(
+                color: const Color(0xFF0F172A).withValues(alpha: 0.88),
+              ),
+            ),
 
           // 2. Active Screen (Transparent Scaffold on top)
           IndexedStack(index: _currentIndex, children: screens),
@@ -57,9 +65,11 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         onDestinationSelected: (index) {
           setState(() => _currentIndex = index);
         },
-        backgroundColor: Colors.white.withValues(alpha: 0.92), // Slightly translucent
+        backgroundColor: isDark
+            ? const Color(0xFF1E293B).withValues(alpha: 0.96)
+            : Colors.white.withValues(alpha: 0.92),
         elevation: 6,
-        indicatorColor: const Color(0xFF1E88E5).withValues(alpha: 0.15),
+        indicatorColor: const Color(0xFF1E88E5).withValues(alpha: isDark ? 0.3 : 0.15),
         destinations: [
           const NavigationDestination(
             icon: Icon(Icons.home_outlined),

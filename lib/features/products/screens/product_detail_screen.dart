@@ -36,6 +36,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final productProvider = context.watch<ProductProvider>();
 
     // Fetch the updated favorite state from the provider
@@ -47,7 +48,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     final totalPrice = currentProduct.price * _quantity;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor:
+          isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
       body: Stack(
         children: [
           // 1. Scrollable Content
@@ -62,7 +64,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     Container(
                       height: 380,
                       width: double.infinity,
-                      decoration: const BoxDecoration(color: Colors.white),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF0F172A) : Colors.white,
+                      ),
                       child: Hero(
                         tag: 'product-image-${currentProduct.id}',
                         child: Image.network(
@@ -96,21 +100,25 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               child: Container(
                                 padding: const EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.9),
+                                  color: isDark
+                                      ? const Color(0xFF1E293B)
+                                      : Colors.white.withValues(alpha: 0.9),
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
                                       color: Colors.black.withValues(
-                                        alpha: 0.1,
+                                        alpha: isDark ? 0.3 : 0.1,
                                       ),
                                       blurRadius: 10,
                                     ),
                                   ],
                                 ),
-                                child: const Icon(
+                                child: Icon(
                                   Icons.arrow_back_ios_new_rounded,
                                   size: 18,
-                                  color: Color(0xFF1E293B),
+                                  color: isDark
+                                      ? Colors.white
+                                      : const Color(0xFF1E293B),
                                 ),
                               ),
                             ),
@@ -123,12 +131,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               child: Container(
                                 padding: const EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.9),
+                                  color: isDark
+                                      ? const Color(0xFF1E293B)
+                                      : Colors.white.withValues(alpha: 0.9),
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
                                       color: Colors.black.withValues(
-                                        alpha: 0.1,
+                                        alpha: isDark ? 0.3 : 0.1,
                                       ),
                                       blurRadius: 10,
                                     ),
@@ -141,7 +151,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   size: 20,
                                   color: currentProduct.isFavorite
                                       ? const Color(0xFFEF4444)
-                                      : const Color(0xFF1E293B),
+                                      : (isDark
+                                          ? Colors.white
+                                          : const Color(0xFF1E293B)),
                                 ),
                               ),
                             ),
@@ -156,9 +168,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(22),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
+                  decoration: BoxDecoration(
+                    color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                    borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(28),
                     ),
                   ),
@@ -204,17 +216,21 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               const SizedBox(width: 4),
                               Text(
                                 '${currentProduct.rating}',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontWeight: FontWeight.w800,
                                   fontSize: 14,
-                                  color: Color(0xFF1E293B),
+                                  color: isDark
+                                      ? Colors.white
+                                      : const Color(0xFF1E293B),
                                 ),
                               ),
                               const SizedBox(width: 4),
                               Text(
                                 '(${currentProduct.reviewCount} reviews)',
                                 style: TextStyle(
-                                  color: Colors.grey.shade500,
+                                  color: isDark
+                                      ? Colors.grey.shade400
+                                      : Colors.grey.shade500,
                                   fontSize: 13,
                                 ),
                               ),
@@ -227,10 +243,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       // Product Title
                       Text(
                         currentProduct.name,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFF0F172A),
+                          color: isDark
+                              ? Colors.white
+                              : const Color(0xFF0F172A),
                           letterSpacing: -0.5,
                           height: 1.2,
                         ),
@@ -255,7 +273,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               '\$${currentProduct.originalPrice!.toStringAsFixed(2)}',
                               style: TextStyle(
                                 fontSize: 16,
-                                color: Colors.grey.shade400,
+                                color: isDark
+                                    ? Colors.grey.shade500
+                                    : Colors.grey.shade400,
                                 decoration: TextDecoration.lineThrough,
                               ),
                             ),
@@ -263,16 +283,22 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         ],
                       ),
                       const SizedBox(height: 20),
-                      const Divider(color: Color(0xFFF1F5F9)),
+                      Divider(
+                        color: isDark
+                            ? const Color(0xFF334155)
+                            : const Color(0xFFF1F5F9),
+                      ),
                       const SizedBox(height: 16),
 
                       // Variant Selection
-                      const Text(
+                      Text(
                         'Select Variant',
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF1E293B),
+                          color: isDark
+                              ? Colors.white
+                              : const Color(0xFF1E293B),
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -292,12 +318,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               decoration: BoxDecoration(
                                 color: isSelected
                                     ? const Color(0xFF1E88E5)
-                                    : const Color(0xFFF8FAFC),
+                                    : (isDark
+                                        ? const Color(0xFF0F172A)
+                                        : const Color(0xFFF8FAFC)),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
                                   color: isSelected
                                       ? const Color(0xFF1E88E5)
-                                      : const Color(0xFFE2E8F0),
+                                      : (isDark
+                                          ? const Color(0xFF334155)
+                                          : const Color(0xFFE2E8F0)),
                                 ),
                               ),
                               child: Text(
@@ -309,7 +339,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                       : FontWeight.w500,
                                   color: isSelected
                                       ? Colors.white
-                                      : const Color(0xFF475569),
+                                      : (isDark
+                                          ? Colors.grey.shade300
+                                          : const Color(0xFF475569)),
                                 ),
                               ),
                             ),
@@ -319,12 +351,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       const SizedBox(height: 22),
 
                       // Description
-                      const Text(
+                      Text(
                         'Product Overview',
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF1E293B),
+                          color: isDark
+                              ? Colors.white
+                              : const Color(0xFF1E293B),
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -333,7 +367,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         style: TextStyle(
                           fontSize: 14,
                           height: 1.5,
-                          color: Colors.grey.shade600,
+                          color: isDark
+                              ? Colors.grey.shade300
+                              : Colors.grey.shade600,
                         ),
                       ),
                     ],
@@ -349,13 +385,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E293B) : Colors.white,
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(22),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.08),
+                    color: Colors.black.withValues(
+                      alpha: isDark ? 0.3 : 0.08,
+                    ),
                     blurRadius: 20,
                     offset: const Offset(0, -4),
                   ),
@@ -372,7 +410,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF1F5F9),
+                        color: isDark
+                            ? const Color(0xFF0F172A)
+                            : const Color(0xFFF1F5F9),
                         borderRadius: BorderRadius.circular(14),
                       ),
                       child: Row(
@@ -382,13 +422,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             child: Container(
                               padding: const EdgeInsets.all(6),
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: isDark
+                                    ? const Color(0xFF334155)
+                                    : Colors.white,
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.remove,
                                 size: 16,
-                                color: Color(0xFF334155),
+                                color: isDark
+                                    ? Colors.white
+                                    : const Color(0xFF334155),
                               ),
                             ),
                           ),
@@ -396,10 +440,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: 12),
                             child: Text(
                               '$_quantity',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w800,
-                                color: Color(0xFF0F172A),
+                                color: isDark
+                                    ? Colors.white
+                                    : const Color(0xFF0F172A),
                               ),
                             ),
                           ),
@@ -408,13 +454,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             child: Container(
                               padding: const EdgeInsets.all(6),
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: isDark
+                                    ? const Color(0xFF334155)
+                                    : Colors.white,
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.add,
                                 size: 16,
-                                color: Color(0xFF334155),
+                                color: isDark
+                                    ? Colors.white
+                                    : const Color(0xFF334155),
                               ),
                             ),
                           ),

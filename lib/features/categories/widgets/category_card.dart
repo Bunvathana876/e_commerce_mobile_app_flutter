@@ -9,17 +9,22 @@ class CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF1E293B) : Colors.white,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFF1F5F9), width: 1.2),
+          border: Border.all(
+            color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+            width: 1.2,
+          ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
+              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -46,7 +51,9 @@ class CategoryCard extends StatelessWidget {
                                 return child;
                               }
                               return Container(
-                                color: const Color(0xFFF8FAFC),
+                                color: isDark
+                                    ? const Color(0xFF0F172A)
+                                    : const Color(0xFFF8FAFC),
                                 child: const Center(
                                   child: SizedBox(
                                     width: 16,
@@ -59,7 +66,9 @@ class CategoryCard extends StatelessWidget {
                               );
                             },
                             errorBuilder: (_, _, _) => Container(
-                              color: const Color(0xFFE2E8F0),
+                              color: isDark
+                                  ? const Color(0xFF0F172A)
+                                  : const Color(0xFFE2E8F0),
                               alignment: Alignment.center,
                               child: Text(
                                 category.icon,
@@ -68,7 +77,9 @@ class CategoryCard extends StatelessWidget {
                             ),
                           )
                         : Container(
-                            color: const Color(0xFFE2E8F0),
+                            color: isDark
+                                ? const Color(0xFF0F172A)
+                                : const Color(0xFFE2E8F0),
                             alignment: Alignment.center,
                             child: Text(
                               category.icon,
@@ -85,11 +96,15 @@ class CategoryCard extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.92),
+                      color: isDark
+                          ? const Color(0xFF334155)
+                          : Colors.white.withValues(alpha: 0.92),
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.08),
+                          color: Colors.black.withValues(
+                            alpha: isDark ? 0.3 : 0.08,
+                          ),
                           blurRadius: 6,
                         ),
                       ],
@@ -114,10 +129,10 @@ class CategoryCard extends StatelessWidget {
                     category.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF0F172A),
+                      color: isDark ? Colors.white : const Color(0xFF0F172A),
                       letterSpacing: -0.2,
                     ),
                   ),
@@ -133,15 +148,19 @@ class CategoryCard extends StatelessWidget {
                           vertical: 3,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF1F5F9),
+                          color: isDark
+                              ? const Color(0xFF334155)
+                              : const Color(0xFFF1F5F9),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
                           '${category.itemCount} items',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF64748B),
+                            color: isDark
+                                ? Colors.grey.shade300
+                                : const Color(0xFF64748B),
                           ),
                         ),
                       ),

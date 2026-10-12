@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../app/routes.dart';
+import '../../../core/utils/page_transitions.dart';
 import '../../../shared/widgets/bouncing_button.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../cart/providers/cart_provider.dart';
 import '../../products/providers/product_provider.dart';
+import '../settings/screens/settings_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -31,8 +33,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         : 'student@example.com';
     final roleName = (user?.role ?? 'customer').toUpperCase();
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text(
           'My Profile',
@@ -42,13 +46,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           IconButton(
             tooltip: 'Settings',
-            icon: const Icon(Icons.settings_outlined, color: Color(0xFF1E293B)),
+            icon: Icon(
+              Icons.settings_outlined,
+              color: isDark ? Colors.white : const Color(0xFF1E293B),
+            ),
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Account settings coming soon!'),
-                  behavior: SnackBarBehavior.floating,
-                ),
+              Navigator.of(context).push(
+                SmoothPageRoute(page: const SettingsScreen()),
               );
             },
           ),
@@ -61,12 +65,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: isDark ? const Color(0xFF1E293B) : Colors.white,
               borderRadius: BorderRadius.circular(22),
-              border: Border.all(color: const Color(0xFFF1F5F9), width: 1.2),
+              border: Border.all(
+                color:
+                    isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+                width: 1.2,
+              ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.03),
+                  color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
                   blurRadius: 14,
                   offset: const Offset(0, 4),
                 ),
@@ -133,10 +141,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               displayName,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.w800,
-                                color: Color(0xFF0F172A),
+                                color: isDark
+                                    ? Colors.white
+                                    : const Color(0xFF0F172A),
                               ),
                             ),
                           ),
@@ -155,7 +165,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 13,
-                          color: Colors.grey.shade500,
+                          color: isDark
+                              ? Colors.grey.shade400
+                              : Colors.grey.shade500,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -167,25 +179,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           vertical: 3,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFEFF6FF),
+                          color: isDark
+                              ? const Color(0xFF1E3A8A).withValues(alpha: 0.35)
+                              : const Color(0xFFEFF6FF),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: const Color(0xFFBFDBFE)),
+                          border: Border.all(
+                            color: isDark
+                                ? const Color(0xFF2563EB)
+                                : const Color(0xFFBFDBFE),
+                          ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.star_rounded,
                               size: 13,
-                              color: Color(0xFF2563EB),
+                              color: isDark
+                                  ? const Color(0xFF60A5FA)
+                                  : const Color(0xFF2563EB),
                             ),
                             const SizedBox(width: 4),
                             Text(
                               '$roleName MEMBER',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 10.5,
                                 fontWeight: FontWeight.w800,
-                                color: Color(0xFF2563EB),
+                                color: isDark
+                                    ? const Color(0xFF93C5FD)
+                                    : const Color(0xFF2563EB),
                                 letterSpacing: 0.3,
                               ),
                             ),
@@ -208,6 +230,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 value: '2 Active',
                 icon: Icons.local_shipping_outlined,
                 color: const Color(0xFF1E88E5),
+                isDark: isDark,
               ),
               const SizedBox(width: 10),
               _buildStatCard(
@@ -215,6 +238,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 value: '${productProvider.totalFavoritesCount} Saved',
                 icon: Icons.favorite_border_rounded,
                 color: const Color(0xFFEF4444),
+                isDark: isDark,
               ),
               const SizedBox(width: 10),
               _buildStatCard(
@@ -222,13 +246,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 value: '${cartProvider.totalItemsCount} Items',
                 icon: Icons.shopping_bag_outlined,
                 color: const Color(0xFF10B981),
+                isDark: isDark,
               ),
             ],
           ),
           const SizedBox(height: 22),
 
           // 3. Section: Orders & Payments
-          _buildSectionHeader('Orders & Shopping'),
+          _buildSectionHeader('Orders & Shopping', isDark),
           const SizedBox(height: 8),
           _buildCardGroup([
             _buildProfileTile(
@@ -236,6 +261,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               iconColor: const Color(0xFF1E88E5),
               title: 'My Orders',
               subtitle: 'Track active deliveries & view history',
+              isDark: isDark,
               badge: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
@@ -260,12 +286,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 );
               },
             ),
-            const Divider(height: 1, indent: 56, color: Color(0xFFF1F5F9)),
+            Divider(
+              height: 1,
+              indent: 56,
+              color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+            ),
             _buildProfileTile(
               icon: Icons.location_on_outlined,
               iconColor: const Color(0xFFF59E0B),
               title: 'Shipping Addresses',
               subtitle: 'Phnom Penh, Cambodia (Default)',
+              isDark: isDark,
               onTap: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -275,12 +306,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 );
               },
             ),
-            const Divider(height: 1, indent: 56, color: Color(0xFFF1F5F9)),
+            Divider(
+              height: 1,
+              indent: 56,
+              color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+            ),
             _buildProfileTile(
               icon: Icons.credit_card_outlined,
               iconColor: const Color(0xFF10B981),
               title: 'Payment Methods',
               subtitle: 'ABA KHQR, Visa / Mastercard',
+              isDark: isDark,
               onTap: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -290,13 +326,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 );
               },
             ),
-          ]),
+          ], isDark),
           const SizedBox(height: 22),
 
           // 4. Section: Preferences & Security
-          _buildSectionHeader('Preferences & Security'),
+          _buildSectionHeader('Preferences & Security', isDark),
           const SizedBox(height: 8),
           _buildCardGroup([
+            _buildProfileTile(
+              icon: Icons.settings_outlined,
+              iconColor: const Color(0xFF1E88E5),
+              title: 'App Settings',
+              subtitle: 'Dark mode, currency, language & cache',
+              isDark: isDark,
+              onTap: () {
+                Navigator.of(context).push(
+                  SmoothPageRoute(page: const SettingsScreen()),
+                );
+              },
+            ),
+            Divider(
+              height: 1,
+              indent: 56,
+              color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+            ),
             ListTile(
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 16,
@@ -314,17 +367,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   size: 22,
                 ),
               ),
-              title: const Text(
+              title: Text(
                 'Push Notifications',
                 style: TextStyle(
                   fontSize: 14.5,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF0F172A),
+                  color: isDark ? Colors.white : const Color(0xFF0F172A),
                 ),
               ),
               subtitle: Text(
                 'Receive instant status updates on orders',
-                style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
+                ),
               ),
               trailing: Switch.adaptive(
                 value: _notificationsEnabled,
@@ -334,23 +390,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 },
               ),
             ),
-            const Divider(height: 1, indent: 56, color: Color(0xFFF1F5F9)),
+            Divider(
+              height: 1,
+              indent: 56,
+              color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+            ),
             _buildProfileTile(
               icon: Icons.shield_outlined,
               iconColor: const Color(0xFF0284C7),
               title: 'Account Security',
               subtitle: 'Password, biometric login & sessions',
+              isDark: isDark,
               onTap: () {},
             ),
-            const Divider(height: 1, indent: 56, color: Color(0xFFF1F5F9)),
+            Divider(
+              height: 1,
+              indent: 56,
+              color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+            ),
             _buildProfileTile(
               icon: Icons.help_outline_rounded,
               iconColor: const Color(0xFF64748B),
               title: 'Help Center & Support',
               subtitle: 'FAQ, contact support & chat',
+              isDark: isDark,
               onTap: () {},
             ),
-          ]),
+          ], isDark),
           const SizedBox(height: 24),
 
           // 5. Working Logout Button
@@ -359,9 +425,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Container(
               height: 52,
               decoration: BoxDecoration(
-                color: const Color(0xFFFEF2F2),
+                color: isDark
+                    ? const Color(0xFF7F1D1D).withValues(alpha: 0.25)
+                    : const Color(0xFFFEF2F2),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFFCA5A5), width: 1.2),
+                border: Border.all(
+                  color: isDark
+                      ? const Color(0xFFEF4444).withValues(alpha: 0.4)
+                      : const Color(0xFFFCA5A5),
+                  width: 1.2,
+                ),
               ),
               alignment: Alignment.center,
               child: const Row(
@@ -393,7 +466,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               'Blue Panda E-Commerce • v1.0.0 (Build 2026)',
               style: TextStyle(
                 fontSize: 11.5,
-                color: Colors.grey.shade400,
+                color: isDark ? Colors.grey.shade500 : Colors.grey.shade400,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -405,26 +478,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   // --- Helper Widgets ---
 
-  Widget _buildSectionHeader(String title) {
+  Widget _buildSectionHeader(String title, bool isDark) {
     return Text(
       title,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 15,
         fontWeight: FontWeight.w800,
-        color: Color(0xFF0F172A),
+        color: isDark ? Colors.white : const Color(0xFF0F172A),
       ),
     );
   }
 
-  Widget _buildCardGroup(List<Widget> children) {
+  Widget _buildCardGroup(List<Widget> children, bool isDark) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFF1F5F9), width: 1.2),
+        border: Border.all(
+          color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+          width: 1.2,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.02),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -441,39 +517,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required String subtitle,
     Widget? badge,
     required VoidCallback onTap,
+    required bool isDark,
   }) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       leading: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: iconColor.withValues(alpha: 0.12),
+          color: iconColor.withValues(alpha: isDark ? 0.2 : 0.12),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Icon(icon, color: iconColor, size: 22),
       ),
       title: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 14.5,
           fontWeight: FontWeight.w700,
-          color: Color(0xFF0F172A),
+          color: isDark ? Colors.white : const Color(0xFF0F172A),
         ),
       ),
       subtitle: Text(
         subtitle,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
-        style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+        style: TextStyle(
+          fontSize: 12,
+          color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
+        ),
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (badge != null) ...[badge, const SizedBox(width: 8)],
-          const Icon(
+          Icon(
             Icons.arrow_forward_ios_rounded,
             size: 14,
-            color: Color(0xFF94A3B8),
+            color: isDark ? Colors.grey.shade500 : const Color(0xFF94A3B8),
           ),
         ],
       ),
@@ -486,17 +566,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required String value,
     required IconData icon,
     required Color color,
+    required bool isDark,
   }) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF1E293B) : Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFF1F5F9), width: 1.2),
+          border: Border.all(
+            color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+            width: 1.2,
+          ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.02),
+              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.02),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -507,7 +591,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.12),
+                color: color.withValues(alpha: isDark ? 0.2 : 0.12),
                 shape: BoxShape.circle,
               ),
               child: Icon(icon, size: 16, color: color),
@@ -517,10 +601,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               value,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF0F172A),
+                color: isDark ? Colors.white : const Color(0xFF0F172A),
               ),
             ),
             const SizedBox(height: 2),
@@ -529,7 +613,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w500,
-                color: Colors.grey.shade500,
+                color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
               ),
             ),
           ],

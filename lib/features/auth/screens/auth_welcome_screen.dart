@@ -17,10 +17,11 @@ class AuthWelcomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isDark ? const Color(0xFF0F172A) : Colors.white,
       body: Stack(
         children: [
           // 1. Top Background 3D Illustration
@@ -153,16 +154,21 @@ class AuthWelcomeScreen extends StatelessWidget {
             ),
           ),
 
-          // 5. White Bottom Card with Action Buttons
+          // 5. Bottom Card with Action Buttons
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.fromLTRB(24, 26, 24, 18),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-                boxShadow: [
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+                border: isDark
+                    ? const Border(
+                        top: BorderSide(color: Color(0xFF334155), width: 1.2),
+                      )
+                    : null,
+                boxShadow: const [
                   BoxShadow(
                     color: Color(0x18000000),
                     blurRadius: 24,
@@ -176,12 +182,12 @@ class AuthWelcomeScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Text(
+                    Text(
                       'Sign in',
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w800,
-                        color: Color(0xFF1E293B),
+                        color: isDark ? Colors.white : const Color(0xFF1E293B),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -192,8 +198,11 @@ class AuthWelcomeScreen extends StatelessWidget {
                       child: Container(
                         height: 50,
                         decoration: BoxDecoration(
-                          color: Colors.black,
+                          color: isDark ? const Color(0xFF0F172A) : Colors.black,
                           borderRadius: BorderRadius.circular(14),
+                          border: isDark
+                              ? Border.all(color: const Color(0xFF334155))
+                              : null,
                         ),
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -220,10 +229,10 @@ class AuthWelcomeScreen extends StatelessWidget {
                       child: Container(
                         height: 50,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: isDark ? const Color(0xFF0F172A) : Colors.white,
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
-                            color: const Color(0xFFE2E8F0),
+                            color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
                             width: 1.2,
                           ),
                         ),
@@ -232,12 +241,12 @@ class AuthWelcomeScreen extends StatelessWidget {
                           children: [
                             _buildGoogleIcon(),
                             const SizedBox(width: 10),
-                            const Text(
+                            Text(
                               'Continue with Google',
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
-                                color: Color(0xFF1E293B),
+                                color: isDark ? Colors.white : const Color(0xFF1E293B),
                               ),
                             ),
                           ],
@@ -249,8 +258,10 @@ class AuthWelcomeScreen extends StatelessWidget {
                     // Divider "or"
                     Row(
                       children: [
-                        const Expanded(
-                          child: Divider(color: Color(0xFFE2E8F0)),
+                        Expanded(
+                          child: Divider(
+                            color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -258,13 +269,15 @@ class AuthWelcomeScreen extends StatelessWidget {
                             'or',
                             style: TextStyle(
                               fontSize: 13,
-                              color: Colors.grey.shade500,
+                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
-                        const Expanded(
-                          child: Divider(color: Color(0xFFE2E8F0)),
+                        Expanded(
+                          child: Divider(
+                            color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                          ),
                         ),
                       ],
                     ),
@@ -276,16 +289,21 @@ class AuthWelcomeScreen extends StatelessWidget {
                       child: Container(
                         height: 50,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFE6F4EA),
+                          color: isDark
+                              ? const Color(0xFF065F46).withValues(alpha: 0.35)
+                              : const Color(0xFFE6F4EA),
                           borderRadius: BorderRadius.circular(14),
+                          border: isDark
+                              ? Border.all(color: const Color(0xFF059669).withValues(alpha: 0.5))
+                              : null,
                         ),
                         alignment: Alignment.center,
-                        child: const Text(
+                        child: Text(
                           'Continue with email',
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w700,
-                            color: Color(0xFF0D652D),
+                            color: isDark ? const Color(0xFF34D399) : const Color(0xFF0D652D),
                           ),
                         ),
                       ),
@@ -298,7 +316,7 @@ class AuthWelcomeScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 11.5,
-                        color: Colors.grey.shade600,
+                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                         height: 1.4,
                       ),
                     ),
@@ -311,7 +329,7 @@ class AuthWelcomeScreen extends StatelessWidget {
                         Text(
                           "Don't have an account?",
                           style: TextStyle(
-                            color: Colors.grey.shade700,
+                            color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
                             fontSize: 13,
                           ),
                         ),

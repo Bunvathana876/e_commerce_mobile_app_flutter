@@ -18,11 +18,12 @@ class FavoritesScreen extends StatelessWidget {
     final productProvider = context.watch<ProductProvider>();
     final cartProvider = context.read<CartProvider>();
     final favorites = productProvider.favoriteProducts;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // 1. Empty State
     if (favorites.isEmpty) {
       return Scaffold(
-        backgroundColor: const Color(0xFFF8FAFC),
+        backgroundColor: Colors.transparent,
         appBar: AppBar(
           title: const Text(
             'Wishlist',
@@ -38,7 +39,9 @@ class FavoritesScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFEF4444).withValues(alpha: 0.1),
+                    color: const Color(0xFFEF4444).withValues(
+                      alpha: isDark ? 0.2 : 0.1,
+                    ),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -48,12 +51,12 @@ class FavoritesScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   'Your wishlist is empty',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFF0F172A),
+                    color: isDark ? Colors.white : const Color(0xFF0F172A),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -62,7 +65,7 @@ class FavoritesScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey.shade600,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                     height: 1.4,
                   ),
                 ),
@@ -118,7 +121,7 @@ class FavoritesScreen extends StatelessWidget {
 
     // 2. Populated Favorites Grid
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(
           'Wishlist (${favorites.length})',
@@ -127,9 +130,9 @@ class FavoritesScreen extends StatelessWidget {
         actions: [
           IconButton(
             tooltip: 'Clear Wishlist',
-            icon: const Icon(
+            icon: Icon(
               Icons.delete_outline_rounded,
-              color: Color(0xFF64748B),
+              color: isDark ? Colors.grey.shade400 : const Color(0xFF64748B),
             ),
             onPressed: () => _confirmClearDialog(context, productProvider),
           ),

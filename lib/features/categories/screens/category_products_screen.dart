@@ -32,6 +32,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
   Widget build(BuildContext context) {
     final productProvider = context.watch<ProductProvider>();
     final cartProvider = context.watch<CartProvider>();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // 1. Filter products specifically for this category
     final List<ProductModel> categoryProducts =
@@ -55,6 +56,12 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
               fit: BoxFit.cover,
             ),
           ),
+          if (isDark)
+            Positioned.fill(
+              child: Container(
+                color: const Color(0xFF0F172A).withValues(alpha: 0.88),
+              ),
+            ),
 
           // Content
           SafeArea(
@@ -73,19 +80,25 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.9),
+                              color: isDark
+                                  ? const Color(0xFF1E293B)
+                                  : Colors.white.withValues(alpha: 0.9),
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.08),
+                                  color: Colors.black.withValues(
+                                    alpha: isDark ? 0.3 : 0.08,
+                                  ),
                                   blurRadius: 8,
                                 ),
                               ],
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.arrow_back_ios_new_rounded,
                               size: 18,
-                              color: Color(0xFF1E293B),
+                              color: isDark
+                                  ? Colors.white
+                                  : const Color(0xFF1E293B),
                             ),
                           ),
                         ),
@@ -108,10 +121,12 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                                       widget.category.name,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.w800,
-                                        color: Color(0xFF0F172A),
+                                        color: isDark
+                                            ? Colors.white
+                                            : const Color(0xFF0F172A),
                                         letterSpacing: -0.4,
                                       ),
                                     ),
@@ -122,7 +137,9 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                                 '${categoryProducts.length} items available',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: Colors.grey.shade600,
+                                  color: isDark
+                                      ? Colors.grey.shade400
+                                      : Colors.grey.shade600,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -146,19 +163,25 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                               Container(
                                 padding: const EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.9),
+                                  color: isDark
+                                      ? const Color(0xFF1E293B)
+                                      : Colors.white.withValues(alpha: 0.9),
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.08),
+                                      color: Colors.black.withValues(
+                                        alpha: isDark ? 0.3 : 0.08,
+                                      ),
                                       blurRadius: 8,
                                     ),
                                   ],
                                 ),
-                                child: const Icon(
+                                child: Icon(
                                   Icons.shopping_bag_outlined,
                                   size: 19,
-                                  color: Color(0xFF1E293B),
+                                  color: isDark
+                                      ? Colors.white
+                                      : const Color(0xFF1E293B),
                                 ),
                               ),
                               if (cartProvider.totalItemsCount > 0)
@@ -200,12 +223,20 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                     padding: const EdgeInsets.fromLTRB(20, 10, 20, 14),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: isDark
+                            ? const Color(0xFF1E293B)
+                            : Colors.white,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: const Color(0xFFE2E8F0)),
+                        border: Border.all(
+                          color: isDark
+                              ? const Color(0xFF334155)
+                              : const Color(0xFFE2E8F0),
+                        ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.03),
+                            color: Colors.black.withValues(
+                              alpha: isDark ? 0.2 : 0.03,
+                            ),
                             blurRadius: 10,
                           ),
                         ],
@@ -214,21 +245,34 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                         controller: _searchController,
                         onChanged: (val) =>
                             setState(() => _searchQuery = val.trim()),
+                        style: TextStyle(
+                          color: isDark
+                              ? Colors.white
+                              : const Color(0xFF0F172A),
+                          fontSize: 14,
+                        ),
                         decoration: InputDecoration(
                           hintText: 'Search in ${widget.category.name}...',
                           hintStyle: TextStyle(
                             fontSize: 13.5,
-                            color: Colors.grey.shade400,
+                            color: isDark
+                                ? Colors.grey.shade500
+                                : Colors.grey.shade400,
                           ),
                           prefixIcon: Icon(
                             Icons.search_rounded,
-                            color: Colors.grey.shade500,
+                            color: isDark
+                                ? Colors.grey.shade400
+                                : Colors.grey.shade500,
                           ),
                           suffixIcon: _searchQuery.isNotEmpty
                               ? IconButton(
-                                  icon: const Icon(
+                                  icon: Icon(
                                     Icons.close_rounded,
                                     size: 18,
+                                    color: isDark
+                                        ? Colors.grey.shade300
+                                        : Colors.grey.shade700,
                                   ),
                                   onPressed: () {
                                     _searchController.clear();
@@ -259,7 +303,9 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                           Container(
                             padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF1E88E5).withValues(alpha: 0.08),
+                              color: const Color(0xFF1E88E5).withValues(
+                                alpha: isDark ? 0.2 : 0.08,
+                              ),
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(
@@ -273,10 +319,12 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                             _searchQuery.isNotEmpty
                                 ? 'No results for "$_searchQuery"'
                                 : 'No products in this department yet',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
-                              color: Color(0xFF0F172A),
+                              color: isDark
+                                  ? Colors.white
+                                  : const Color(0xFF0F172A),
                             ),
                           ),
                           const SizedBox(height: 6),
@@ -284,7 +332,9 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                             'Check back later for new arrivals',
                             style: TextStyle(
                               fontSize: 13,
-                              color: Colors.grey.shade600,
+                              color: isDark
+                                  ? Colors.grey.shade400
+                                  : Colors.grey.shade600,
                             ),
                           ),
                         ],

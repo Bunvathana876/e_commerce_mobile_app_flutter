@@ -19,18 +19,22 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF1E293B) : Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFF1F5F9), width: 1.2),
+          border: Border.all(
+            color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+            width: 1.2,
+          ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.03),
+              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -56,14 +60,18 @@ class ProductCard extends StatelessWidget {
                         loadingBuilder: (context, child, progress) {
                           if (progress == null) return child;
                           return Container(
-                            color: const Color(0xFFF8FAFC),
+                            color: isDark
+                                ? const Color(0xFF0F172A)
+                                : const Color(0xFFF8FAFC),
                             child: const Center(
                               child: CircularProgressIndicator(strokeWidth: 2),
                             ),
                           );
                         },
                         errorBuilder: (context, error, stackTrace) => Container(
-                          color: const Color(0xFFF1F5F9),
+                          color: isDark
+                              ? const Color(0xFF0F172A)
+                              : const Color(0xFFF1F5F9),
                           child: const Icon(
                             Icons.broken_image_rounded,
                             color: Colors.grey,
@@ -108,7 +116,9 @@ class ProductCard extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.9),
+                        color: isDark
+                            ? const Color(0xFF334155)
+                            : Colors.white.withValues(alpha: 0.9),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -118,7 +128,9 @@ class ProductCard extends StatelessWidget {
                         size: 16,
                         color: product.isFavorite
                             ? const Color(0xFFEF4444)
-                            : Colors.grey.shade500,
+                            : (isDark
+                                ? Colors.grey.shade400
+                                : Colors.grey.shade500),
                       ),
                     ),
                   ),
@@ -141,7 +153,9 @@ class ProductCard extends StatelessWidget {
                           vertical: 2,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFEF3C7),
+                          color: isDark
+                              ? const Color(0xFF78350F).withValues(alpha: 0.4)
+                              : const Color(0xFFFEF3C7),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Row(
@@ -150,15 +164,17 @@ class ProductCard extends StatelessWidget {
                             const Icon(
                               Icons.star_rounded,
                               size: 13,
-                              color: Color(0xFFD97706),
+                              color: Color(0xFFF59E0B),
                             ),
                             const SizedBox(width: 2),
                             Text(
                               product.rating.toString(),
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 10.5,
                                 fontWeight: FontWeight.w700,
-                                color: Color(0xFF92400E),
+                                color: isDark
+                                    ? const Color(0xFFFCD34D)
+                                    : const Color(0xFF92400E),
                               ),
                             ),
                           ],
@@ -173,10 +189,10 @@ class ProductCard extends StatelessWidget {
                     product.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF1E293B),
+                      color: isDark ? Colors.white : const Color(0xFF1E293B),
                       letterSpacing: -0.2,
                     ),
                   ),
@@ -206,7 +222,9 @@ class ProductCard extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   fontSize: 10,
-                                  color: Colors.grey.shade400,
+                                  color: isDark
+                                      ? Colors.grey.shade500
+                                      : Colors.grey.shade400,
                                   decoration: TextDecoration.lineThrough,
                                 ),
                               ),

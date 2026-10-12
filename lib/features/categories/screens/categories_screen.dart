@@ -27,6 +27,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     final categoryProvider = context.watch<CategoryProvider>();
     final categories = categoryProvider.displayCategories;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -46,12 +47,18 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 14),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDark ? const Color(0xFF1E293B) : Colors.white,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                  border: Border.all(
+                    color: isDark
+                        ? const Color(0xFF334155)
+                        : const Color(0xFFE2E8F0),
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.02),
+                      color: Colors.black.withValues(
+                        alpha: isDark ? 0.2 : 0.02,
+                      ),
                       blurRadius: 10,
                     ),
                   ],
@@ -59,19 +66,33 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 child: TextField(
                   controller: _searchController,
                   onChanged: categoryProvider.setSearchQuery,
+                  style: TextStyle(
+                    color: isDark ? Colors.white : const Color(0xFF0F172A),
+                    fontSize: 14,
+                  ),
                   decoration: InputDecoration(
                     hintText: 'Search collections & departments...',
                     hintStyle: TextStyle(
                       fontSize: 14,
-                      color: Colors.grey.shade400,
+                      color: isDark
+                          ? Colors.grey.shade500
+                          : Colors.grey.shade400,
                     ),
                     prefixIcon: Icon(
                       Icons.search_rounded,
-                      color: Colors.grey.shade500,
+                      color: isDark
+                          ? Colors.grey.shade400
+                          : Colors.grey.shade500,
                     ),
                     suffixIcon: categoryProvider.searchQuery.isNotEmpty
                         ? IconButton(
-                            icon: const Icon(Icons.close_rounded, size: 18),
+                            icon: Icon(
+                              Icons.close_rounded,
+                              size: 18,
+                              color: isDark
+                                  ? Colors.grey.shade300
+                                  : Colors.grey.shade700,
+                            ),
                             onPressed: () {
                               _searchController.clear();
                               categoryProvider.setSearchQuery('');
@@ -212,19 +233,21 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'All Departments',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF0F172A),
+                      color: isDark ? Colors.white : const Color(0xFF0F172A),
                     ),
                   ),
                   Text(
                     '${categories.length} found',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.grey.shade500,
+                      color: isDark
+                          ? Colors.grey.shade400
+                          : Colors.grey.shade500,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -244,14 +267,18 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     Icon(
                       Icons.search_off_rounded,
                       size: 56,
-                      color: Colors.grey.shade400,
+                      color: isDark
+                          ? Colors.grey.shade600
+                          : Colors.grey.shade400,
                     ),
                     const SizedBox(height: 12),
                     Text(
                       'No categories matching "${categoryProvider.searchQuery}"',
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.grey.shade600,
+                        color: isDark
+                            ? Colors.grey.shade400
+                            : Colors.grey.shade600,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
