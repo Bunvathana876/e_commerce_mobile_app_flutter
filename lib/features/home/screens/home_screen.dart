@@ -1,7 +1,6 @@
 import 'package:e_commerc_mobile_app/shared/widgets/bouncing_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../auth/providers/auth_provider.dart';
 import '../../products/providers/product_provider.dart';
 import '../../products/widgets/product_card.dart';
 import '../../../core/utils/page_transitions.dart';
@@ -9,16 +8,15 @@ import '../../products/screens/product_detail_screen.dart';
 import '../../cart/providers/cart_provider.dart';
 import '../../categories/models/category_model.dart';
 import '../../categories/providers/category_provider.dart';
+import '../../../shared/widgets/promo_banner_carousel.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
     final productProvider = context.watch<ProductProvider>();
     final categoryProvider = context.watch<CategoryProvider>();
-    final user = authProvider.currentUser;
     final products = productProvider.filteredProducts;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -27,130 +25,115 @@ class HomeScreen extends StatelessWidget {
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
-            // 1. Top Header & Search Bar
+            // 1. Top Search Bar & Notification Header
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                padding: const EdgeInsets.fromLTRB(20, 14, 20, 8),
+                child: Row(
                   children: [
-                    // Greeting Row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Hello, ${user?.fullName ?? "Shopper"} 👋',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w800,
-                                color: isDark
-                                    ? Colors.white
-                                    : const Color(0xFF0F172A),
+                    // Search Input Box
+                    Expanded(
+                      child: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? const Color(0xFF1E293B)
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: isDark
+                                ? const Color(0xFF334155)
+                                : const Color(0xFFE2E8F0),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(
+                                alpha: isDark ? 0.2 : 0.02,
                               ),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              'What are you looking for today?',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: isDark
-                                    ? Colors.grey.shade400
-                                    : Colors.black,
-                              ),
+                              blurRadius: 10,
                             ),
                           ],
                         ),
-                        // Notification Bell Icon
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: isDark
-                                ? const Color(0xFF1E293B)
-                                : Colors.white,
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(
-                              color: isDark
-                                  ? const Color(0xFF334155)
-                                  : const Color(0xFFE2E8F0),
-                            ),
-                          ),
-                          child: Icon(
-                            Icons.notifications_none_rounded,
-                            size: 22,
+                        child: TextField(
+                          onChanged: productProvider.setSearchQuery,
+                          textAlignVertical: TextAlignVertical.center,
+                          style: TextStyle(
                             color: isDark
                                 ? Colors.white
-                                : const Color(0xFF1E293B),
+                                : const Color(0xFF0F172A),
+                            fontSize: 14,
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 18),
-
-                    // Search Input Box
-                    Container(
-                      decoration: BoxDecoration(
-                        color: isDark
-                            ? const Color(0xFF1E293B)
-                            : Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: isDark
-                              ? const Color(0xFF334155)
-                              : const Color(0xFFE2E8F0),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(
-                              alpha: isDark ? 0.2 : 0.02,
+                          decoration: InputDecoration(
+                            isDense: true,
+                            hintText: 'Search products, brands, gear...',
+                            hintStyle: TextStyle(
+                              fontSize: 14,
+                              color: isDark
+                                  ? Colors.grey.shade500
+                                  : Colors.grey.shade400,
                             ),
-                            blurRadius: 10,
+                            prefixIcon: Icon(
+                              Icons.search_rounded,
+                              color: isDark
+                                  ? Colors.grey.shade400
+                                  : Colors.grey.shade500,
+                            ),
+                            suffixIcon: Container(
+                              margin: const EdgeInsets.all(6),
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF1E88E5),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(
+                                Icons.tune_rounded,
+                                size: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                            border: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                            ),
                           ),
-                        ],
+                        ),
                       ),
-                      child: TextField(
-                        onChanged: productProvider.setSearchQuery,
-                        style: TextStyle(
+                    ),
+                    const SizedBox(width: 12),
+
+                    // Notification Bell Icon
+                    BouncingButton(
+                      onTap: () {},
+                      child: Container(
+                        height: 50,
+                        width: 50,
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? const Color(0xFF1E293B)
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: isDark
+                                ? const Color(0xFF334155)
+                                : const Color(0xFFE2E8F0),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(
+                                alpha: isDark ? 0.2 : 0.02,
+                              ),
+                              blurRadius: 10,
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.notifications_none_rounded,
+                          size: 22,
                           color: isDark
                               ? Colors.white
-                              : const Color(0xFF0F172A),
-                          fontSize: 14,
-                        ),
-                        decoration: InputDecoration(
-                          hintText: 'Search products, brands, gear...',
-                          hintStyle: TextStyle(
-                            fontSize: 14,
-                            color: isDark
-                                ? Colors.grey.shade500
-                                : Colors.grey.shade400,
-                          ),
-                          prefixIcon: Icon(
-                            Icons.search_rounded,
-                            color: isDark
-                                ? Colors.grey.shade400
-                                : Colors.grey.shade500,
-                          ),
-                          suffixIcon: Container(
-                            margin: const EdgeInsets.all(6),
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF1E88E5),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: const Icon(
-                              Icons.tune_rounded,
-                              size: 16,
-                              color: Colors.white,
-                            ),
-                          ),
-                          border: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 14,
-                          ),
+                              : const Color(0xFF1E293B),
                         ),
                       ),
                     ),
@@ -159,70 +142,48 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            // 2. Promotional Banner
+            // 2. Promotional Banner Carousel
             SliverToBoxAdapter(
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF1E88E5), Color(0xFF1565C0)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+              child: PromoBannerCarousel(
+                autoScrollDuration: const Duration(seconds: 4),
+                items: [
+                  PromoItem(
+                    titlePrefix: 'Get ',
+                    highlightText: '40% off',
+                    titleSuffix: ' your\nfirst order',
+                    subtitle: '+ \$0 delivery fee on orders \$15+',
+                    couponCode: 'FIRST40',
+                    buttonText: 'Order now',
+                    accentColor: const Color(0xFF008744),
+                    imageUrl:
+                        'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=80',
+                    onTap: () => productProvider.selectCategory(0),
                   ),
-                  borderRadius: BorderRadius.circular(22),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF1E88E5).withValues(alpha: 0.3),
-                      blurRadius: 16,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const Text(
-                              'LIMITED OFFER',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          const Text(
-                            'Up to 30% Off\nElectronics & Shoes',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              height: 1.2,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Icon(
-                      Icons.shopping_bag_outlined,
-                      size: 54,
-                      color: Colors.white70,
-                    ),
-                  ],
-                ),
+                  PromoItem(
+                    titlePrefix: 'Up to ',
+                    highlightText: '50% off',
+                    titleSuffix: ' all\nelectronics',
+                    subtitle: 'Top laptops, 4K displays & sound gear',
+                    couponCode: 'TECH50',
+                    buttonText: 'Shop now',
+                    accentColor: const Color(0xFF1E88E5),
+                    imageUrl:
+                        'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500&q=80',
+                    onTap: () => productProvider.selectCategory(1),
+                  ),
+                  PromoItem(
+                    titlePrefix: 'Flat ',
+                    highlightText: '30% off',
+                    titleSuffix: ' trending\nsneakers',
+                    subtitle: 'Exclusive kicks & new sport drops',
+                    couponCode: 'KICKS30',
+                    buttonText: 'Explore',
+                    accentColor: const Color(0xFFEA580C),
+                    imageUrl:
+                        'https://images.unsplash.com/photo-1552346154-21d32810aba3?w=500&q=80',
+                    onTap: () => productProvider.selectCategory(3),
+                  ),
+                ],
               ),
             ),
 
@@ -303,8 +264,8 @@ class HomeScreen extends StatelessWidget {
                                       color: isSelected
                                           ? const Color(0xFF1E88E5)
                                           : (isDark
-                                              ? const Color(0xFF334155)
-                                              : const Color(0xFFE2E8F0)),
+                                                ? const Color(0xFF334155)
+                                                : const Color(0xFFE2E8F0)),
                                       width: isSelected ? 2.5 : 1.2,
                                     ),
                                     boxShadow: [
@@ -333,8 +294,12 @@ class HomeScreen extends StatelessWidget {
                                                   }
                                                   return Container(
                                                     color: isDark
-                                                        ? const Color(0xFF0F172A)
-                                                        : const Color(0xFFF1F5F9),
+                                                        ? const Color(
+                                                            0xFF0F172A,
+                                                          )
+                                                        : const Color(
+                                                            0xFFF1F5F9,
+                                                          ),
                                                     child: const Center(
                                                       child: SizedBox(
                                                         width: 14,
@@ -391,8 +356,8 @@ class HomeScreen extends StatelessWidget {
                                     color: isSelected
                                         ? const Color(0xFF1E88E5)
                                         : (isDark
-                                            ? Colors.grey.shade300
-                                            : const Color(0xFF334155)),
+                                              ? Colors.grey.shade300
+                                              : const Color(0xFF334155)),
                                   ),
                                 ),
                               ],
@@ -418,9 +383,7 @@ class HomeScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w800,
-                        color: isDark
-                            ? Colors.white
-                            : const Color(0xFF0F172A),
+                        color: isDark ? Colors.white : const Color(0xFF0F172A),
                       ),
                     ),
                     Text(
