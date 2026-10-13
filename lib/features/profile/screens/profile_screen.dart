@@ -8,6 +8,7 @@ import '../../cart/providers/cart_provider.dart';
 import '../../products/providers/product_provider.dart';
 import '../settings/screens/settings_screen.dart';
 
+// Profile screen displaying account information, stats, settings, and logout.
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -51,9 +52,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               color: isDark ? Colors.white : const Color(0xFF1E293B),
             ),
             onPressed: () {
-              Navigator.of(context).push(
-                SmoothPageRoute(page: const SettingsScreen()),
-              );
+              Navigator.of(
+                context,
+              ).push(SmoothPageRoute(page: const SettingsScreen()));
             },
           ),
         ],
@@ -61,15 +62,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 36),
         children: [
-          // 1. User Profile Header Card
+          // User profile card
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF1E293B) : Colors.white,
               borderRadius: BorderRadius.circular(22),
               border: Border.all(
-                color:
-                    isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+                color: isDark
+                    ? const Color(0xFF334155)
+                    : const Color(0xFFF1F5F9),
                 width: 1.2,
               ),
               boxShadow: [
@@ -222,7 +224,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 16),
 
-          // 2. Quick Account Stats Row
+          // Quick account summary cards
           Row(
             children: [
               _buildStatCard(
@@ -252,7 +254,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 22),
 
-          // 3. Section: Orders & Payments
+          // Orders and shopping navigation
           _buildSectionHeader('Orders & Shopping', isDark),
           const SizedBox(height: 8),
           _buildCardGroup([
@@ -329,7 +331,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ], isDark),
           const SizedBox(height: 22),
 
-          // 4. Section: Preferences & Security
+          // Preferences and security navigation
           _buildSectionHeader('Preferences & Security', isDark),
           const SizedBox(height: 8),
           _buildCardGroup([
@@ -340,9 +342,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               subtitle: 'Dark mode, currency, language & cache',
               isDark: isDark,
               onTap: () {
-                Navigator.of(context).push(
-                  SmoothPageRoute(page: const SettingsScreen()),
-                );
+                Navigator.of(
+                  context,
+                ).push(SmoothPageRoute(page: const SettingsScreen()));
               },
             ),
             Divider(
@@ -401,7 +403,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               title: 'Account Security',
               subtitle: 'Password, biometric login & sessions',
               isDark: isDark,
-              onTap: () {},
+              onTap: () => _showAccountSecuritySheet(context, isDark),
             ),
             Divider(
               height: 1,
@@ -414,12 +416,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               title: 'Help Center & Support',
               subtitle: 'FAQ, contact support & chat',
               isDark: isDark,
-              onTap: () {},
+              onTap: () => _showHelpCenterSheet(context, isDark),
             ),
           ], isDark),
           const SizedBox(height: 24),
 
-          // 5. Working Logout Button
+          // Logout button
           BouncingButton(
             onTap: () => _showLogoutDialog(context, authProvider),
             child: Container(
@@ -460,7 +462,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 16),
 
-          // App Version Footer
+          // App version footer
           Center(
             child: Text(
               'Blue Panda E-Commerce • v1.0.0 (Build 2026)',
@@ -476,7 +478,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // --- Helper Widgets ---
+  // Helper widgets
 
   Widget _buildSectionHeader(String title, bool isDark) {
     return Text(
@@ -622,7 +624,259 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // --- Working Logout Flow ---
+  // Bottom sheets
+
+  void _showAccountSecuritySheet(BuildContext context, bool isDark) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? const Color(0xFF334155)
+                      : const Color(0xFFCBD5E1),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 18),
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF0284C7).withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.shield_outlined,
+                    color: Color(0xFF0284C7),
+                    size: 22,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Account Security',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: isDark ? Colors.white : const Color(0xFF0F172A),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(
+                Icons.lock_reset_rounded,
+                color: Color(0xFF1E88E5),
+              ),
+              title: Text(
+                'Change Password',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                  color: isDark ? Colors.white : const Color(0xFF0F172A),
+                ),
+              ),
+              subtitle: Text(
+                'Update your current account password',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                ),
+              ),
+              trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14),
+              onTap: () {
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Password reset instructions sent to your email!',
+                    ),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              },
+            ),
+            const Divider(),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(
+                Icons.fingerprint_rounded,
+                color: Color(0xFF10B981),
+              ),
+              title: Text(
+                'Biometric Authentication',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                  color: isDark ? Colors.white : const Color(0xFF0F172A),
+                ),
+              ),
+              subtitle: Text(
+                'Fast sign-in with Face ID or fingerprint',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                ),
+              ),
+              trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14),
+              onTap: () {
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Biometric authentication is active for this device!',
+                    ),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showHelpCenterSheet(BuildContext context, bool isDark) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? const Color(0xFF334155)
+                      : const Color(0xFFCBD5E1),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 18),
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF64748B).withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.help_outline_rounded,
+                    color: Color(0xFF64748B),
+                    size: 22,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Help & Customer Support',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: isDark ? Colors.white : const Color(0xFF0F172A),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(
+                Icons.chat_bubble_outline_rounded,
+                color: Color(0xFF1E88E5),
+              ),
+              title: Text(
+                'Live Chat with Support',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                  color: isDark ? Colors.white : const Color(0xFF0F172A),
+                ),
+              ),
+              subtitle: Text(
+                'Available 24/7 for order questions',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                ),
+              ),
+              trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14),
+              onTap: () {
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Support agent will connect shortly.'),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              },
+            ),
+            const Divider(),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(
+                Icons.mail_outline_rounded,
+                color: Color(0xFFF59E0B),
+              ),
+              title: Text(
+                'Email Support',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                  color: isDark ? Colors.white : const Color(0xFF0F172A),
+                ),
+              ),
+              subtitle: Text(
+                'support@bluepanda.com',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                ),
+              ),
+              trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14),
+              onTap: () {
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Contact support at support@bluepanda.com'),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Logout confirmation dialog
 
   void _showLogoutDialog(BuildContext context, AuthProvider authProvider) {
     showDialog(

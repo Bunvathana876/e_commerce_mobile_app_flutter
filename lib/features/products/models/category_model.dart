@@ -9,6 +9,7 @@ class CategoryModel {
     required this.icon,
   });
 
+  // Parse category from JSON map
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
       id: json['id'] as int,

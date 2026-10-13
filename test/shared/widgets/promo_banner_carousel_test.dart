@@ -106,48 +106,64 @@ void main() {
     expect(banner3.activeDotIndex, 0);
   });
 
-  testWidgets('Manual swipe changes page, resets timer, and updates activeDotIndex', (
-    tester,
-  ) async {
-    await tester.pumpWidget(
-      buildCarousel(autoScrollDuration: const Duration(seconds: 4)),
-    );
-    await tester.pumpAndSettle();
+  testWidgets(
+    'Manual swipe changes page, resets timer, and updates activeDotIndex',
+    (tester) async {
+      await tester.pumpWidget(
+        buildCarousel(autoScrollDuration: const Duration(seconds: 4)),
+      );
+      await tester.pumpAndSettle();
 
-    expect(find.textContaining('40% off', findRichText: true), findsOneWidget);
+      expect(
+        find.textContaining('40% off', findRichText: true),
+        findsOneWidget,
+      );
 
-    // Swipe left to advance to next page manually
-    await tester.fling(find.byType(PageView), const Offset(-400, 0), 1000);
-    await tester.pumpAndSettle();
+      // Swipe left to advance to next page manually
+      await tester.fling(find.byType(PageView), const Offset(-400, 0), 1000);
+      await tester.pumpAndSettle();
 
-    // Page 1 should now be active
-    expect(find.textContaining('50% off', findRichText: true), findsOneWidget);
-    final banner = tester.widget<PromoBanner>(find.byType(PromoBanner));
-    expect(banner.activeDotIndex, 1);
+      // Page 1 should now be active
+      expect(
+        find.textContaining('50% off', findRichText: true),
+        findsOneWidget,
+      );
+      final banner = tester.widget<PromoBanner>(find.byType(PromoBanner));
+      expect(banner.activeDotIndex, 1);
 
-    // Wait 2 seconds (less than 4s autoScrollDuration) - should stay on page 1
-    await tester.pump(const Duration(seconds: 2));
-    await tester.pumpAndSettle();
-    expect(find.textContaining('50% off', findRichText: true), findsOneWidget);
+      // Wait 2 seconds (less than 4s autoScrollDuration) - should stay on page 1
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining('50% off', findRichText: true),
+        findsOneWidget,
+      );
 
-    // Wait another 2 seconds (reaching full 4s from reset) - auto-scroll to page 2
-    await tester.pump(const Duration(seconds: 2));
-    await tester.pumpAndSettle();
-    expect(find.textContaining('30% off', findRichText: true), findsOneWidget);
-  });
+      // Wait another 2 seconds (reaching full 4s from reset) - auto-scroll to page 2
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining('30% off', findRichText: true),
+        findsOneWidget,
+      );
+    },
+  );
 
-  testWidgets('PromoBannerCarousel cleans up resources on dispose without error', (
-    tester,
-  ) async {
-    await tester.pumpWidget(buildCarousel());
-    await tester.pumpAndSettle();
+  testWidgets(
+    'PromoBannerCarousel cleans up resources on dispose without error',
+    (tester) async {
+      await tester.pumpWidget(buildCarousel());
+      await tester.pumpAndSettle();
 
-    // Unmount the widget to trigger dispose()
-    await tester.pumpWidget(const MaterialApp(home: Scaffold(body: SizedBox())));
-    await tester.pumpAndSettle();
+      // Unmount the widget to trigger dispose()
+      await tester.pumpWidget(
+        const MaterialApp(home: Scaffold(body: SizedBox())),
+      );
+      await tester.pumpAndSettle();
 
-    expect(find.byType(PromoBannerCarousel), findsNothing);
-  });
+      expect(find.byType(PromoBannerCarousel), findsNothing);
+    },
+  );
 
   testWidgets('PromoBannerCarousel handles empty list gracefully', (
     tester,
@@ -156,5 +172,44 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(PromoBanner), findsNothing);
+  });
+
+  testWidgets('PromoBanner renders tag and badge when provided', (
+    tester,
+  ) async {
+    const customItem = PromoItem(
+      titlePrefix: 'Special ',
+      highlightText: '25% off',
+      titleSuffix: ' today',
+      couponCode: 'SAVE25',
+      tag: 'FLASH DEAL',
+      tagIcon: Icons.bolt_rounded,
+      badgeText: 'HOT',
+    );
+
+    await tester.pumpWidget(buildCarousel(items: [customItem]));
+    await tester.pumpAndSettle();
+
+    expect(find.text('FLASH DEAL'), findsOneWidget);
+    expect(find.byIcon(Icons.bolt_rounded), findsOneWidget);
+    expect(find.text('HOT'), findsOneWidget);
+  });
+
+  testWidgets('Tapping coupon code copies to clipboard and shows SnackBar', (
+    tester,
+  ) async {
+    const customItem = PromoItem(
+      highlightText: '10% off',
+      couponCode: 'WELCOME10',
+    );
+
+    await tester.pumpWidget(buildCarousel(items: [customItem]));
+    await tester.pumpAndSettle();
+
+    // Tap the coupon code chip
+    await tester.tap(find.textContaining('WELCOME10', findRichText: true));
+    await tester.pump(); // Start SnackBar animation
+
+    expect(find.text('Coupon "WELCOME10" copied to clipboard!'), findsOneWidget);
   });
 }

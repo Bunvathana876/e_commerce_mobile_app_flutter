@@ -77,7 +77,7 @@ class CategoryProvider extends ChangeNotifier {
 
   List<CategoryModel> get allCategories => _categories;
 
-  // Filtered list for the categories screen (excludes "All Items" 0 index)
+  // Filter categories by search query
   List<CategoryModel> get displayCategories {
     return _categories.where((cat) {
       final matchesSearch = cat.name.toLowerCase().contains(
@@ -87,11 +87,13 @@ class CategoryProvider extends ChangeNotifier {
     }).toList();
   }
 
+  // Change selected category
   void selectCategory(int id) {
     _selectedCategoryId = id;
     notifyListeners();
   }
 
+  // Update category search query
   void setSearchQuery(String query) {
     _searchQuery = query;
     notifyListeners();

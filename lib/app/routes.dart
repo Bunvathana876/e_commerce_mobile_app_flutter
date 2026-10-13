@@ -8,12 +8,14 @@ import '../features/profile/settings/screens/settings_screen.dart';
 class AppRoutes {
   AppRoutes._();
 
+  // Named routes
   static const String welcome = '/welcome';
   static const String login = '/login';
   static const String signUp = '/sign-up';
   static const String mainNav = '/main-nav';
   static const String settings = '/settings';
 
+  // Route map
   static Map<String, WidgetBuilder> get routes => {
     welcome: (context) => const AuthWelcomeScreen(),
     login: (context) => const LoginScreen(),

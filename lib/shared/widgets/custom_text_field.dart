@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Standard text input field with prefix/suffix icons and validation.
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final String label;

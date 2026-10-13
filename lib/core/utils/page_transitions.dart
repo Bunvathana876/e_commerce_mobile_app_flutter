@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Custom slide page transition
 class SmoothPageRoute<T> extends PageRouteBuilder<T> {
   final Widget page;
 
@@ -14,6 +15,7 @@ class SmoothPageRoute<T> extends PageRouteBuilder<T> {
             curve: Curves.easeOutCubic,
             reverseCurve: Curves.easeInCubic,
           );
+          // Slide in from right edge
           return SlideTransition(
             position: Tween<Offset>(
               begin: const Offset(1.0, 0.0),
@@ -25,6 +27,7 @@ class SmoothPageRoute<T> extends PageRouteBuilder<T> {
       );
 }
 
+// Instant page route without transition
 class NoAnimationPageRoute<T> extends PageRouteBuilder<T> {
   final Widget page;
 
@@ -35,4 +38,3 @@ class NoAnimationPageRoute<T> extends PageRouteBuilder<T> {
         reverseTransitionDuration: Duration.zero,
       );
 }
-

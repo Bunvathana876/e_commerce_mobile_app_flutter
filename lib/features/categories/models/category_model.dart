@@ -17,6 +17,7 @@ class CategoryModel {
     this.imageUrl = '',
   });
 
+  // Parse category from JSON map
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
       id: json['id'] as int,
@@ -30,6 +31,7 @@ class CategoryModel {
     );
   }
 
+  // Convert category to JSON map
   Map<String, dynamic> toJson() {
     return {
       'id': id,

@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 class AppTheme {
   AppTheme._();
 
+  // Primary brand color
   static const Color primarySeedColor = Color(0xFF1E88E5);
 
-  // 1. Light Theme
+  // Light theme
   static ThemeData get lightTheme {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: primarySeedColor,
@@ -37,24 +38,17 @@ class AppTheme {
           fontSize: 18,
           fontWeight: FontWeight.w700,
         ),
-        contentTextStyle: TextStyle(
-          color: Colors.grey.shade600,
-          fontSize: 14,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        contentTextStyle: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: Colors.white,
       ),
-      dividerTheme: const DividerThemeData(
-        color: Color(0xFFF1F5F9),
-      ),
+      dividerTheme: const DividerThemeData(color: Color(0xFFF1F5F9)),
     );
   }
 
-  // 2. Dark Theme
+  // Dark theme
   static ThemeData get darkTheme {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: primarySeedColor,
@@ -86,20 +80,13 @@ class AppTheme {
           fontSize: 18,
           fontWeight: FontWeight.w700,
         ),
-        contentTextStyle: TextStyle(
-          color: Colors.grey.shade300,
-          fontSize: 14,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        contentTextStyle: TextStyle(color: Colors.grey.shade300, fontSize: 14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: Color(0xFF1E293B),
       ),
-      dividerTheme: const DividerThemeData(
-        color: Color(0xFF334155),
-      ),
+      dividerTheme: const DividerThemeData(color: Color(0xFF334155)),
     );
   }
 }

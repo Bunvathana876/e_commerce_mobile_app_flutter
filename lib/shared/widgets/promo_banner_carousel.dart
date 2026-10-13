@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'promo_banner.dart';
 
-/// Data model representing an individual promotional item in the banner carousel.
+// Data model for an individual promotional banner slide.
 class PromoItem {
   final String titlePrefix;
   final String highlightText;
@@ -14,6 +14,9 @@ class PromoItem {
   final String? assetPath;
   final VoidCallback? onTap;
   final Color accentColor;
+  final String? tag;
+  final IconData? tagIcon;
+  final String? badgeText;
 
   const PromoItem({
     this.titlePrefix = 'Get ',
@@ -26,16 +29,13 @@ class PromoItem {
     this.assetPath,
     this.onTap,
     this.accentColor = const Color(0xFF008744),
+    this.tag,
+    this.tagIcon,
+    this.badgeText,
   });
 }
 
-/// An auto-scrolling promotional banner carousel built purely with Flutter primitives.
-///
-/// Features:
-/// - Smooth automatic page progression using [PageController] and [Timer.periodic].
-/// - Resets timer countdown upon manual user gestures.
-/// - Synchronizes active dot pagination indicator with the currently displayed page.
-/// - Cleans up timer and controller resources properly in [dispose].
+// Auto-scrolling carousel that cycles through promotional banner items.
 class PromoBannerCarousel extends StatefulWidget {
   final List<PromoItem> items;
   final Duration autoScrollDuration;
@@ -45,7 +45,7 @@ class PromoBannerCarousel extends StatefulWidget {
     super.key,
     required this.items,
     this.autoScrollDuration = const Duration(seconds: 4),
-    this.height = 191.0,
+    this.height = 201.0,
   });
 
   @override
@@ -73,7 +73,7 @@ class _PromoBannerCarouselState extends State<PromoBannerCarousel> {
     }
   }
 
-  /// Starts or restarts the auto-scrolling periodic timer.
+  // Start periodic auto-scroll timer
   void _startAutoScrollTimer() {
     _autoScrollTimer?.cancel();
 
@@ -92,7 +92,7 @@ class _PromoBannerCarouselState extends State<PromoBannerCarousel> {
     });
   }
 
-  /// Handles page changes whether initiated automatically or via user swipe.
+  // Handle page switch (swipe or timer)
   void _onPageChanged(int index) {
     setState(() {
       _currentPage = index;
@@ -129,6 +129,7 @@ class _PromoBannerCarouselState extends State<PromoBannerCarousel> {
         },
         child: PageView.builder(
           controller: _pageController,
+          physics: const BouncingScrollPhysics(),
           itemCount: widget.items.length,
           onPageChanged: _onPageChanged,
           itemBuilder: (context, index) {
@@ -147,6 +148,9 @@ class _PromoBannerCarouselState extends State<PromoBannerCarousel> {
               accentColor: item.accentColor,
               activeDotIndex: _currentPage,
               totalDots: widget.items.length,
+              tag: item.tag,
+              tagIcon: item.tagIcon,
+              badgeText: item.badgeText,
             );
           },
         ),
@@ -154,4 +158,3 @@ class _PromoBannerCarouselState extends State<PromoBannerCarousel> {
     );
   }
 }
-

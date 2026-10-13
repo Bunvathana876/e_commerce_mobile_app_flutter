@@ -4,6 +4,7 @@ import '../../../shared/widgets/bouncing_button.dart';
 import 'login_screen.dart';
 import 'sign_up_screen.dart';
 
+// Welcome screen with options to sign in with Apple, Google, or Email
 class AuthWelcomeScreen extends StatelessWidget {
   const AuthWelcomeScreen({super.key});
 
@@ -24,7 +25,7 @@ class AuthWelcomeScreen extends StatelessWidget {
       backgroundColor: isDark ? const Color(0xFF0F172A) : Colors.white,
       body: Stack(
         children: [
-          // 1. Top Background 3D Illustration
+          // Background cover image
           Positioned(
             top: 0,
             left: 0,
@@ -37,7 +38,7 @@ class AuthWelcomeScreen extends StatelessWidget {
             ),
           ),
 
-          // 2. Subtle Dark Gradient Overlay behind text for maximum readability
+          // Gradient overlay for text contrast
           Positioned(
             top: 0,
             left: 0,
@@ -59,7 +60,7 @@ class AuthWelcomeScreen extends StatelessWidget {
             ),
           ),
 
-          // 3. Top Header Bar (Brand Badge + Skip Button)
+          // Logo and brand name in status bar area
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -107,7 +108,7 @@ class AuthWelcomeScreen extends StatelessWidget {
             ),
           ),
 
-          // 4. Hero Text positioned right above the bottom sheet
+          // Welcome heading and description
           Positioned(
             left: 24,
             right: 24,
@@ -154,7 +155,7 @@ class AuthWelcomeScreen extends StatelessWidget {
             ),
           ),
 
-          // 5. Bottom Card with Action Buttons
+          // Bottom card with sign-in buttons
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -162,7 +163,9 @@ class AuthWelcomeScreen extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(24, 26, 24, 18),
               decoration: BoxDecoration(
                 color: isDark ? const Color(0xFF1E293B) : Colors.white,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(32),
+                ),
                 border: isDark
                     ? const Border(
                         top: BorderSide(color: Color(0xFF334155), width: 1.2),
@@ -198,7 +201,9 @@ class AuthWelcomeScreen extends StatelessWidget {
                       child: Container(
                         height: 50,
                         decoration: BoxDecoration(
-                          color: isDark ? const Color(0xFF0F172A) : Colors.black,
+                          color: isDark
+                              ? const Color(0xFF0F172A)
+                              : Colors.black,
                           borderRadius: BorderRadius.circular(14),
                           border: isDark
                               ? Border.all(color: const Color(0xFF334155))
@@ -229,10 +234,14 @@ class AuthWelcomeScreen extends StatelessWidget {
                       child: Container(
                         height: 50,
                         decoration: BoxDecoration(
-                          color: isDark ? const Color(0xFF0F172A) : Colors.white,
+                          color: isDark
+                              ? const Color(0xFF0F172A)
+                              : Colors.white,
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
-                            color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                            color: isDark
+                                ? const Color(0xFF334155)
+                                : const Color(0xFFE2E8F0),
                             width: 1.2,
                           ),
                         ),
@@ -246,7 +255,9 @@ class AuthWelcomeScreen extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
-                                color: isDark ? Colors.white : const Color(0xFF1E293B),
+                                color: isDark
+                                    ? Colors.white
+                                    : const Color(0xFF1E293B),
                               ),
                             ),
                           ],
@@ -260,7 +271,9 @@ class AuthWelcomeScreen extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Divider(
-                            color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                            color: isDark
+                                ? const Color(0xFF334155)
+                                : const Color(0xFFE2E8F0),
                           ),
                         ),
                         Padding(
@@ -269,14 +282,18 @@ class AuthWelcomeScreen extends StatelessWidget {
                             'or',
                             style: TextStyle(
                               fontSize: 13,
-                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
+                              color: isDark
+                                  ? Colors.grey.shade400
+                                  : Colors.grey.shade500,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
                         Expanded(
                           child: Divider(
-                            color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                            color: isDark
+                                ? const Color(0xFF334155)
+                                : const Color(0xFFE2E8F0),
                           ),
                         ),
                       ],
@@ -294,7 +311,11 @@ class AuthWelcomeScreen extends StatelessWidget {
                               : const Color(0xFFE6F4EA),
                           borderRadius: BorderRadius.circular(14),
                           border: isDark
-                              ? Border.all(color: const Color(0xFF059669).withValues(alpha: 0.5))
+                              ? Border.all(
+                                  color: const Color(
+                                    0xFF059669,
+                                  ).withValues(alpha: 0.5),
+                                )
                               : null,
                         ),
                         alignment: Alignment.center,
@@ -303,7 +324,9 @@ class AuthWelcomeScreen extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w700,
-                            color: isDark ? const Color(0xFF34D399) : const Color(0xFF0D652D),
+                            color: isDark
+                                ? const Color(0xFF34D399)
+                                : const Color(0xFF0D652D),
                           ),
                         ),
                       ),
@@ -316,7 +339,9 @@ class AuthWelcomeScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 11.5,
-                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                        color: isDark
+                            ? Colors.grey.shade400
+                            : Colors.grey.shade600,
                         height: 1.4,
                       ),
                     ),
@@ -329,7 +354,9 @@ class AuthWelcomeScreen extends StatelessWidget {
                         Text(
                           "Don't have an account?",
                           style: TextStyle(
-                            color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+                            color: isDark
+                                ? Colors.grey.shade400
+                                : Colors.grey.shade700,
                             fontSize: 13,
                           ),
                         ),

@@ -5,6 +5,7 @@ import '../providers/product_provider.dart';
 import '../../../../shared/widgets/bouncing_button.dart';
 import '../../cart/providers/cart_provider.dart';
 
+// Displays full details for a product, with variant selection and cart actions.
 class ProductDetailScreen extends StatefulWidget {
   final ProductModel product;
 
@@ -15,6 +16,7 @@ class ProductDetailScreen extends StatefulWidget {
 }
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
+  // Selected purchase options
   int _quantity = 1;
   int _selectedVariantIndex = 0;
   final List<String> _variants = const [
@@ -39,8 +41,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     final isDark = theme.brightness == Brightness.dark;
     final productProvider = context.watch<ProductProvider>();
 
-    // Fetch the updated favorite state from the provider
-    final currentProduct = productProvider.filteredProducts.firstWhere(
+    // Fetch the updated favorite state from all products in the provider
+    final currentProduct = productProvider.allProducts.firstWhere(
       (item) => item.id == widget.product.id,
       orElse: () => widget.product,
     );
@@ -48,17 +50,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     final totalPrice = currentProduct.price * _quantity;
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      backgroundColor: isDark
+          ? const Color(0xFF0F172A)
+          : const Color(0xFFF8FAFC),
       body: Stack(
         children: [
-          // 1. Scrollable Content
+          // Scrollable product information
           SingleChildScrollView(
             padding: const EdgeInsets.only(bottom: 110),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Top Hero Banner
+                // Hero banner image with back and wishlist buttons
                 Stack(
                   children: [
                     Container(
@@ -80,6 +83,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               ),
                             );
                           },
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(
+                                color: isDark
+                                    ? const Color(0xFF0F172A)
+                                    : const Color(0xFFF1F5F9),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.broken_image_rounded,
+                                    size: 64,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
                         ),
                       ),
                     ),
@@ -152,8 +168,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   color: currentProduct.isFavorite
                                       ? const Color(0xFFEF4444)
                                       : (isDark
-                                          ? Colors.white
-                                          : const Color(0xFF1E293B)),
+                                            ? Colors.white
+                                            : const Color(0xFF1E293B)),
                                 ),
                               ),
                             ),
@@ -164,7 +180,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ],
                 ),
 
-                // Product Information Container
+                // Product details card
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(22),
@@ -319,15 +335,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 color: isSelected
                                     ? const Color(0xFF1E88E5)
                                     : (isDark
-                                        ? const Color(0xFF0F172A)
-                                        : const Color(0xFFF8FAFC)),
+                                          ? const Color(0xFF0F172A)
+                                          : const Color(0xFFF8FAFC)),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
                                   color: isSelected
                                       ? const Color(0xFF1E88E5)
                                       : (isDark
-                                          ? const Color(0xFF334155)
-                                          : const Color(0xFFE2E8F0)),
+                                            ? const Color(0xFF334155)
+                                            : const Color(0xFFE2E8F0)),
                                 ),
                               ),
                               child: Text(
@@ -340,8 +356,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   color: isSelected
                                       ? Colors.white
                                       : (isDark
-                                          ? Colors.grey.shade300
-                                          : const Color(0xFF475569)),
+                                            ? Colors.grey.shade300
+                                            : const Color(0xFF475569)),
                                 ),
                               ),
                             ),
@@ -379,7 +395,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ),
           ),
 
-          // 2. Sticky Bottom Bar with Quantity Stepper & Add to Cart
+          // Bottom bar with quantity selector and add to cart button
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -391,9 +407,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(
-                      alpha: isDark ? 0.3 : 0.08,
-                    ),
+                    color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
                     blurRadius: 20,
                     offset: const Offset(0, -4),
                   ),

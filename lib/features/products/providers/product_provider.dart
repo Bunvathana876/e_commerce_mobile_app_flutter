@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import '../models/category_model.dart';
 import '../models/product_model.dart';
 
+// Manages catalog products, categories, search filtering, and favorites.
 class ProductProvider extends ChangeNotifier {
-  int _selectedCategoryId = 0; // 0 represents "All"
+  // Filter state
+  int _selectedCategoryId = 0; // 0 represents all items
   String _searchQuery = '';
 
   int get selectedCategoryId => _selectedCategoryId;
   String get searchQuery => _searchQuery;
 
+  // Category definitions
   final List<CategoryModel> _categories = const [
     CategoryModel(id: 0, name: 'All Items', icon: '🔥'),
     CategoryModel(id: 1, name: 'Electronics', icon: '💻'),
@@ -20,6 +23,7 @@ class ProductProvider extends ChangeNotifier {
     CategoryModel(id: 7, name: 'Bags & Backpacks', icon: '🎒'),
   ];
 
+  // Favorites
   List<ProductModel> get favoriteProducts {
     return _products.where((product) => product.isFavorite).toList();
   }
@@ -36,8 +40,9 @@ class ProductProvider extends ChangeNotifier {
   List<CategoryModel> get categories => _categories;
   List<ProductModel> get allProducts => List.unmodifiable(_products);
 
+  // Sample catalog data
   List<ProductModel> _products = [
-    // 1. Electronics (Category 1)
+    // Electronics
     const ProductModel(
       id: 101,
       name: 'UltraBook Pro 15" M2 Laptop',
@@ -95,7 +100,7 @@ class ProductProvider extends ChangeNotifier {
           'https://images.unsplash.com/photo-1544652478-6653e09f18a2?w=500&q=80',
     ),
 
-    // 2. Fashion & Clothing (Category 2)
+    // Fashion & Clothing
     const ProductModel(
       id: 2,
       name: 'Minimalist Cotton Casual Hoodie',
@@ -153,7 +158,7 @@ class ProductProvider extends ChangeNotifier {
           'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=500&q=80',
     ),
 
-    // 3. Sneakers & Shoes (Category 3)
+    // Sneakers & Shoes
     const ProductModel(
       id: 3,
       name: 'Running Air Pro Cushion Sneakers',
@@ -210,7 +215,7 @@ class ProductProvider extends ChangeNotifier {
           'https://images.unsplash.com/photo-1607522370275-f14206abe5d3?w=500&q=80',
     ),
 
-    // 4. Gaming & Gear (Category 4)
+    // Gaming & Gear
     const ProductModel(
       id: 5,
       name: 'Classic Mechanical Retro Gaming Mouse',
@@ -267,7 +272,7 @@ class ProductProvider extends ChangeNotifier {
           'https://images.unsplash.com/photo-1599669454699-248893623440?w=500&q=80',
     ),
 
-    // 5. Smart Watches (Category 5)
+    // Smart Watches
     const ProductModel(
       id: 4,
       name: 'Smart OLED 4K Fitness Watch',
@@ -311,7 +316,7 @@ class ProductProvider extends ChangeNotifier {
           'https://images.unsplash.com/photo-1510017803434-a899398421b3?w=500&q=80',
     ),
 
-    // 6. Audio & Sound (Category 6)
+    // Audio & Sound
     const ProductModel(
       id: 1,
       name: 'Wireless Noise-Canceling Headphones',
@@ -355,7 +360,7 @@ class ProductProvider extends ChangeNotifier {
           'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500&q=80',
     ),
 
-    // 7. Bags & Backpacks (Category 7)
+    // Bags & Backpacks
     const ProductModel(
       id: 6,
       name: 'Designer Casual Canvas Tote Bag',
@@ -400,6 +405,16 @@ class ProductProvider extends ChangeNotifier {
     ),
   ];
 
+  // Pagination state for lazy loading
+  int _displayedCount = 6;
+  final int _pageSize = 6;
+  bool _isLoadingMore = false;
+
+  int get displayedCount => _displayedCount;
+  int get pageSize => _pageSize;
+  bool get isLoadingMore => _isLoadingMore;
+
+  // Filter products by selected category and search query
   List<ProductModel> get filteredProducts {
     return _products.where((item) {
       final matchesCategory =
@@ -411,16 +426,58 @@ class ProductProvider extends ChangeNotifier {
     }).toList();
   }
 
+  // Slice of products to display in the grid
+  List<ProductModel> get displayedProducts {
+    final all = filteredProducts;
+    if (all.length <= _displayedCount) {
+      return all;
+    }
+    return all.sublist(0, _displayedCount);
+  }
+
+  bool get hasMore => _displayedCount < filteredProducts.length;
+
+  // Load the next page of products
+  Future<void> loadMore() async {
+    if (_isLoadingMore || !hasMore) return;
+    _isLoadingMore = true;
+    notifyListeners();
+
+    // Small delay to simulate network latency for smoother UX
+    await Future.delayed(const Duration(milliseconds: 600));
+
+    _displayedCount = (_displayedCount + _pageSize).clamp(
+      0,
+      filteredProducts.length,
+    );
+    _isLoadingMore = false;
+    notifyListeners();
+  }
+
+  // Reset pagination back to first batch
+  void resetPagination() {
+    _displayedCount = _pageSize;
+    _isLoadingMore = false;
+    notifyListeners();
+  }
+
   void selectCategory(int categoryId) {
+    if (_selectedCategoryId == categoryId) return;
     _selectedCategoryId = categoryId;
+    _displayedCount = _pageSize;
+    _isLoadingMore = false;
     notifyListeners();
   }
 
   void setSearchQuery(String query) {
+    if (_searchQuery == query) return;
     _searchQuery = query;
+    _displayedCount = _pageSize;
+    _isLoadingMore = false;
     notifyListeners();
   }
 
+  // Toggle wishlist state for a product
   void toggleFavorite(int productId) {
     _products = _products.map((item) {
       if (item.id == productId) {

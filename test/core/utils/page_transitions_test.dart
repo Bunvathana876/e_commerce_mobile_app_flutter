@@ -76,4 +76,3 @@ void main() {
     expect(find.text('Instant Screen'), findsOneWidget);
   });
 }
-

@@ -5,6 +5,7 @@ import '../widgets/category_card.dart';
 import '../../../core/utils/page_transitions.dart';
 import 'category_products_screen.dart';
 
+// Categories screen with search and department grid
 class CategoriesScreen extends StatefulWidget {
   final ValueChanged<int>? onCategorySelected;
 
@@ -41,7 +42,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       ),
       body: CustomScrollView(
         slivers: [
-          // 1. Search Bar Header
+          // Search bar
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 14),
@@ -109,7 +110,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             ),
           ),
 
-          // 2. Featured Category Banner (Shown when not actively searching)
+          // Featured banner (shown when not searching)
           if (categoryProvider.searchQuery.isEmpty)
             SliverToBoxAdapter(
               child: Padding(
@@ -119,9 +120,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     final allCategory = categoryProvider.allCategories.first;
                     Navigator.of(context).push(
                       NoAnimationPageRoute(
-                        page: CategoryProductsScreen(
-                          category: allCategory,
-                        ),
+                        page: CategoryProductsScreen(category: allCategory),
                       ),
                     );
                   },
@@ -226,7 +225,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               ),
             ),
 
-          // 3. Section Title & Count
+          // Department count header
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
@@ -256,7 +255,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             ),
           ),
 
-          // 4. 2-Column Categories Grid
+          // 2-column categories grid
           if (categories.isEmpty)
             SliverFillRemaining(
               hasScrollBody: false,

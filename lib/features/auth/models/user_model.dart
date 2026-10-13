@@ -13,6 +13,7 @@ class UserModel {
     this.avatarUrl,
   });
 
+  // Parse user from JSON map
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id'] as int,
@@ -23,6 +24,7 @@ class UserModel {
     );
   }
 
+  // Convert user to JSON map
   Map<String, dynamic> toJson() {
     return {
       'id': id,

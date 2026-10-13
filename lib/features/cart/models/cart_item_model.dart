@@ -11,8 +11,10 @@ class CartItemModel {
     this.quantity = 1,
   });
 
+  // Line item total calculation
   double get totalPrice => product.price * quantity;
 
+  // Clone cart item with updated count or variant
   CartItemModel copyWith({
     ProductModel? product,
     String? variant,
@@ -25,6 +27,27 @@ class CartItemModel {
     );
   }
 
+  // Parse cart line item from JSON map
+  factory CartItemModel.fromJson(Map<String, dynamic> json) {
+    return CartItemModel(
+      product: json['product'] != null
+          ? ProductModel.fromJson(json['product'] as Map<String, dynamic>)
+          : ProductModel(
+              id: json['product_id'] as int? ?? 0,
+              name: json['product_name'] as String? ?? 'Product',
+              description: '',
+              price: (json['price'] as num?)?.toDouble() ?? 0.0,
+              rating: 5.0,
+              reviewCount: 0,
+              categoryId: 1,
+              imageUrl: json['image_url'] as String? ?? '',
+            ),
+      variant: json['variant'] as String? ?? 'Standard',
+      quantity: json['quantity'] as int? ?? 1,
+    );
+  }
+
+  // Convert line item to JSON map
   Map<String, dynamic> toJson() {
     return {
       'product_id': product.id,

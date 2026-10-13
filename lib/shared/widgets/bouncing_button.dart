@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Adds a smooth bounce animation effect on press for any child widget.
 class BouncingButton extends StatefulWidget {
   final Widget child;
   final VoidCallback? onTap;

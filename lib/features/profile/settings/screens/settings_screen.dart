@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../../shared/widgets/bouncing_button.dart';
 import '../providers/theme_provider.dart';
 
+// Settings screen for managing theme, notifications, language, and currency.
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -11,6 +12,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  // Local settings form state
   String _selectedLanguage = 'English';
   String _selectedCurrency = 'USD (\$)';
   bool _orderNotifications = true;
@@ -31,7 +33,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          // 1. Universal Background Image with Dark Mode Dimmer
+          // Background image with dark mode dimming
           Positioned.fill(
             child: Image.asset(
               'assets/images/bg_all_screens.jpeg',
@@ -47,7 +49,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
 
-          // 2. Content
+          // Settings content
           SafeArea(
             child: ListView(
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
@@ -84,7 +86,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 const SizedBox(height: 20),
 
-                // Section 1: Appearance & Display
+                // Appearance and display
                 _buildSectionTitle('Appearance', titleColor),
                 const SizedBox(height: 8),
                 _buildCardGroup(
@@ -139,7 +141,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 const SizedBox(height: 22),
 
-                // Section 2: Regional & Currency
+                // Regional and currency
                 _buildSectionTitle('Regional & Currency', titleColor),
                 const SizedBox(height: 8),
                 _buildCardGroup(
@@ -252,7 +254,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 const SizedBox(height: 22),
 
-                // Section 3: Notification Preferences
+                // Notification preferences
                 _buildSectionTitle('Notifications', titleColor),
                 const SizedBox(height: 8),
                 _buildCardGroup(
@@ -308,7 +310,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 const SizedBox(height: 22),
 
-                // Section 4: Data & Cache
+                // Storage and cache
                 _buildSectionTitle('Storage & Cache', titleColor),
                 const SizedBox(height: 8),
                 _buildCardGroup(

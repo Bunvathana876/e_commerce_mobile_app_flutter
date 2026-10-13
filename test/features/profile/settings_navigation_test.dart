@@ -19,9 +19,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
-      child: const MaterialApp(
-        home: ProfileScreen(),
-      ),
+      child: const MaterialApp(home: ProfileScreen()),
     );
   }
 
@@ -57,60 +55,54 @@ void main() {
     },
   );
 
-  testWidgets(
-    'Tapping App Settings tile in list navigates to SettingsScreen',
-    (WidgetTester tester) async {
-      await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
+  testWidgets('Tapping App Settings tile in list navigates to SettingsScreen', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(createTestWidget());
+    await tester.pumpAndSettle();
 
-      // Scroll to and find App Settings tile
-      final settingsTileFinder = find.text('App Settings');
-      await tester.scrollUntilVisible(settingsTileFinder, 200);
-      expect(settingsTileFinder, findsOneWidget);
+    // Scroll to and find App Settings tile
+    final settingsTileFinder = find.text('App Settings');
+    await tester.scrollUntilVisible(settingsTileFinder, 200);
+    expect(settingsTileFinder, findsOneWidget);
 
-      // Tap App Settings tile
-      await tester.tap(settingsTileFinder);
-      await tester.pumpAndSettle();
+    // Tap App Settings tile
+    await tester.tap(settingsTileFinder);
+    await tester.pumpAndSettle();
 
-      // Verify SettingsScreen is displayed
-      expect(find.byType(SettingsScreen), findsOneWidget);
-      expect(find.text('Dark Theme'), findsOneWidget);
-    },
-  );
+    // Verify SettingsScreen is displayed
+    expect(find.byType(SettingsScreen), findsOneWidget);
+    expect(find.text('Dark Theme'), findsOneWidget);
+  });
 
-  testWidgets(
-    'Toggling Dark Theme switch updates ThemeProvider state',
-    (WidgetTester tester) async {
-      final themeProvider = ThemeProvider();
+  testWidgets('Toggling Dark Theme switch updates ThemeProvider state', (
+    WidgetTester tester,
+  ) async {
+    final themeProvider = ThemeProvider();
 
-      await tester.pumpWidget(
-        MultiProvider(
-          providers: [
-            ChangeNotifierProvider.value(value: themeProvider),
-          ],
-          child: const MaterialApp(
-            home: SettingsScreen(),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [ChangeNotifierProvider.value(value: themeProvider)],
+        child: const MaterialApp(home: SettingsScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
 
-      expect(themeProvider.isDarkMode, isFalse);
+    expect(themeProvider.isDarkMode, isFalse);
 
-      final darkThemeTile = find.widgetWithText(ListTile, 'Dark Theme');
-      expect(darkThemeTile, findsOneWidget);
+    final darkThemeTile = find.widgetWithText(ListTile, 'Dark Theme');
+    expect(darkThemeTile, findsOneWidget);
 
-      final switchFinder = find.descendant(
-        of: darkThemeTile,
-        matching: find.byType(Switch),
-      );
-      expect(switchFinder, findsOneWidget);
+    final switchFinder = find.descendant(
+      of: darkThemeTile,
+      matching: find.byType(Switch),
+    );
+    expect(switchFinder, findsOneWidget);
 
-      await tester.tap(switchFinder);
-      await tester.pumpAndSettle();
+    await tester.tap(switchFinder);
+    await tester.pumpAndSettle();
 
-      expect(themeProvider.isDarkMode, isTrue);
-      expect(find.text('Dark mode enabled'), findsOneWidget);
-    },
-  );
+    expect(themeProvider.isDarkMode, isTrue);
+    expect(find.text('Dark mode enabled'), findsOneWidget);
+  });
 }

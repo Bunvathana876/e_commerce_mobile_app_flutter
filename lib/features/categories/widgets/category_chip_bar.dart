@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../shared/widgets/bouncing_button.dart';
 import '../models/category_model.dart';
 
+// Horizontal list of category chips
 class CategoryChipBar extends StatelessWidget {
   final List<CategoryModel> categories;
   final int selectedId;
@@ -35,31 +36,28 @@ class CategoryChipBar extends StatelessWidget {
               duration: const Duration(milliseconds: 200),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color:
-                    isSelected
-                        ? const Color(0xFF1E88E5)
-                        : (isDark ? const Color(0xFF1E293B) : Colors.white),
+                color: isSelected
+                    ? const Color(0xFF1E88E5)
+                    : (isDark ? const Color(0xFF1E293B) : Colors.white),
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
-                  color:
-                      isSelected
-                          ? const Color(0xFF1E88E5)
-                          : (isDark
-                              ? const Color(0xFF334155)
-                              : const Color(0xFFE2E8F0)),
+                  color: isSelected
+                      ? const Color(0xFF1E88E5)
+                      : (isDark
+                            ? const Color(0xFF334155)
+                            : const Color(0xFFE2E8F0)),
                 ),
-                boxShadow:
-                    isSelected
-                        ? [
-                          BoxShadow(
-                            color: const Color(
-                              0xFF1E88E5,
-                            ).withValues(alpha: 0.25),
-                            blurRadius: 8,
-                            offset: const Offset(0, 3),
-                          ),
-                        ]
-                        : null,
+                boxShadow: isSelected
+                    ? [
+                        BoxShadow(
+                          color: const Color(
+                            0xFF1E88E5,
+                          ).withValues(alpha: 0.25),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
+                        ),
+                      ]
+                    : null,
               ),
               child: Row(
                 children: [
@@ -68,14 +66,14 @@ class CategoryChipBar extends StatelessWidget {
                   Text(
                     category.name,
                     style: TextStyle(
-                      color:
-                          isSelected
-                              ? Colors.white
-                              : (isDark
-                                  ? Colors.grey.shade300
-                                  : const Color(0xFF334155)),
-                      fontWeight:
-                          isSelected ? FontWeight.w700 : FontWeight.w500,
+                      color: isSelected
+                          ? Colors.white
+                          : (isDark
+                                ? Colors.grey.shade300
+                                : const Color(0xFF334155)),
+                      fontWeight: isSelected
+                          ? FontWeight.w700
+                          : FontWeight.w500,
                       fontSize: 13,
                     ),
                   ),

@@ -3,11 +3,11 @@ import 'package:provider/provider.dart';
 import '../../../core/utils/page_transitions.dart';
 import '../../../shared/widgets/bouncing_button.dart';
 import '../../cart/providers/cart_provider.dart';
-// import '../../products/models/category_model.dart';
 import '../../products/providers/product_provider.dart';
 import '../../products/screens/product_detail_screen.dart';
 import '../../products/widgets/product_card.dart';
 
+// Displays the user's saved items or an empty state when none are added.
 class FavoritesScreen extends StatelessWidget {
   final VoidCallback? onExplore;
 
@@ -20,7 +20,7 @@ class FavoritesScreen extends StatelessWidget {
     final favorites = productProvider.favoriteProducts;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // 1. Empty State
+    // Empty state when wishlist has no items
     if (favorites.isEmpty) {
       return Scaffold(
         backgroundColor: Colors.transparent,
@@ -39,9 +39,9 @@ class FavoritesScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFEF4444).withValues(
-                      alpha: isDark ? 0.2 : 0.1,
-                    ),
+                    color: const Color(
+                      0xFFEF4444,
+                    ).withValues(alpha: isDark ? 0.2 : 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
@@ -119,7 +119,7 @@ class FavoritesScreen extends StatelessWidget {
       );
     }
 
-    // 2. Populated Favorites Grid
+    // Populated favorites grid view
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
@@ -149,37 +149,44 @@ class FavoritesScreen extends StatelessWidget {
                 crossAxisSpacing: 14,
                 mainAxisSpacing: 14,
               ),
-              delegate: SliverChildBuilderDelegate((context, index) {
-                final item = favorites[index];
-                return ProductCard(
-                  product: item,
-                  onTap: () {
-                    Navigator.of(context).push(
-                      SmoothPageRoute(page: ProductDetailScreen(product: item)),
-                    );
-                  },
-                  onToggleFavorite: () {
-                    productProvider.toggleFavorite(item.id);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Removed ${item.name} from wishlist'),
-                        duration: const Duration(seconds: 1),
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    );
-                  },
-                  onAddToCart: () {
-                    cartProvider.addItem(item, quantity: 1);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Added ${item.name} to cart!'),
-                        duration: const Duration(seconds: 1),
-                        behavior: SnackBarBehavior.floating,
-                      ),
-                    );
-                  },
-                );
-              }, childCount: favorites.length),
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final item = favorites[index];
+                  return ProductCard(
+                    product: item,
+                    onTap: () {
+                      Navigator.of(context).push(
+                        SmoothPageRoute(
+                          page: ProductDetailScreen(product: item),
+                        ),
+                      );
+                    },
+                    onToggleFavorite: () {
+                      productProvider.toggleFavorite(item.id);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Removed ${item.name} from wishlist'),
+                          duration: const Duration(seconds: 1),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    },
+                    onAddToCart: () {
+                      cartProvider.addItem(item, quantity: 1);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Added ${item.name} to cart!'),
+                          duration: const Duration(seconds: 1),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    },
+                  );
+                },
+                childCount: favorites.length,
+                addAutomaticKeepAlives: false,
+                addRepaintBoundaries: true,
+              ),
             ),
           ),
         ],
@@ -187,6 +194,7 @@ class FavoritesScreen extends StatelessWidget {
     );
   }
 
+  // Prompts confirmation before wiping wishlist
   void _confirmClearDialog(BuildContext context, ProductProvider provider) {
     showDialog(
       context: context,

@@ -8,6 +8,7 @@ import '../favorites/screens/favorites_screen.dart';
 import '../products/providers/product_provider.dart';
 import '../profile/screens/profile_screen.dart';
 
+// Main app shell with bottom navigation bar
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
 
@@ -20,13 +21,17 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Badge counts for cart and favorites
     final cartCount = context.watch<CartProvider>().totalItemsCount;
     final favCount = context.watch<ProductProvider>().totalFavoritesCount;
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    // Navigation destinations
     final screens = [
-      const HomeScreen(),
+      HomeScreen(
+        onSeeAllCategories: () => setState(() => _currentIndex = 1),
+      ),
       CategoriesScreen(
         onCategorySelected: (catId) {
           context.read<ProductProvider>().selectCategory(catId);
@@ -42,7 +47,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       extendBody: false,
       body: Stack(
         children: [
-          // 1. Permanent Universal Background Image
+          // Background wallpaper
           Positioned.fill(
             child: Image.asset(
               'assets/images/bg_all_screens.jpeg',
@@ -56,10 +61,11 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               ),
             ),
 
-          // 2. Active Screen (Transparent Scaffold on top)
+          // Active tab screen
           IndexedStack(index: _currentIndex, children: screens),
         ],
       ),
+      // Bottom navigation bar with notification badges
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (index) {
@@ -69,7 +75,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             ? const Color(0xFF1E293B).withValues(alpha: 0.96)
             : Colors.white.withValues(alpha: 0.92),
         elevation: 6,
-        indicatorColor: const Color(0xFF1E88E5).withValues(alpha: isDark ? 0.3 : 0.15),
+        indicatorColor: const Color(
+          0xFF1E88E5,
+        ).withValues(alpha: isDark ? 0.3 : 0.15),
         destinations: [
           const NavigationDestination(
             icon: Icon(Icons.home_outlined),

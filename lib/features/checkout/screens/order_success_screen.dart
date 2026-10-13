@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../app/routes.dart';
 import '../../../shared/widgets/bouncing_button.dart';
 
+// Displays order confirmation and receipt details upon successful purchase.
 class OrderSuccessScreen extends StatefulWidget {
   final double grandTotal;
   final String paymentMethod;
@@ -63,7 +64,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen>
             children: [
               const Spacer(),
 
-              // 1. Animated Success Icon
+              // Animated checkmark badge
               ScaleTransition(
                 scale: _scaleAnimation,
                 child: Container(
@@ -92,7 +93,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen>
               ),
               const SizedBox(height: 24),
 
-              // 2. Headline & Subtitle
+              // Success message and confirmation note
               Text(
                 'Order Placed Successfully!',
                 textAlign: TextAlign.center,
@@ -115,22 +116,33 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen>
               ),
               const SizedBox(height: 28),
 
-              // 3. Order Details Summary Card
+              // Order details summary card
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+                  color: isDark
+                      ? const Color(0xFF1E293B)
+                      : const Color(0xFFF8FAFC),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                    color: isDark
+                        ? const Color(0xFF334155)
+                        : const Color(0xFFE2E8F0),
                   ),
                 ),
                 child: Column(
                   children: [
-                    _infoRow('Order ID', _orderId, isBold: true, isDark: isDark),
+                    _infoRow(
+                      'Order ID',
+                      _orderId,
+                      isBold: true,
+                      isDark: isDark,
+                    ),
                     Divider(
                       height: 20,
-                      color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                      color: isDark
+                          ? const Color(0xFF334155)
+                          : const Color(0xFFE2E8F0),
                     ),
                     _infoRow(
                       'Total Paid',
@@ -141,7 +153,9 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen>
                     ),
                     Divider(
                       height: 20,
-                      color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                      color: isDark
+                          ? const Color(0xFF334155)
+                          : const Color(0xFFE2E8F0),
                     ),
                     _infoRow(
                       'Payment Method',
@@ -150,7 +164,9 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen>
                     ),
                     Divider(
                       height: 20,
-                      color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                      color: isDark
+                          ? const Color(0xFF334155)
+                          : const Color(0xFFE2E8F0),
                     ),
                     _infoRow(
                       'Delivering To',
@@ -159,7 +175,9 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen>
                     ),
                     Divider(
                       height: 20,
-                      color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                      color: isDark
+                          ? const Color(0xFF334155)
+                          : const Color(0xFFE2E8F0),
                     ),
                     _infoRow(
                       'Estimated Delivery',
@@ -172,7 +190,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen>
 
               const Spacer(),
 
-              // 4. Action Button
+              // Continue shopping action button
               BouncingButton(
                 onTap: () {
                   // Navigate back to the persistent main navigation and reset stack
@@ -214,6 +232,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen>
     );
   }
 
+  // Helper row for displaying key-value order metadata
   Widget _infoRow(
     String label,
     String value, {
@@ -238,8 +257,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen>
             fontSize: 13.5,
             fontWeight: isBold ? FontWeight.w800 : FontWeight.w600,
             color:
-                valueColor ??
-                (isDark ? Colors.white : const Color(0xFF0F172A)),
+                valueColor ?? (isDark ? Colors.white : const Color(0xFF0F172A)),
           ),
         ),
       ],

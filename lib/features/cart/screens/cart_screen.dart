@@ -5,6 +5,7 @@ import '../providers/cart_provider.dart';
 import '../../../core/utils/page_transitions.dart';
 import '../../checkout/screens/checkout_screen.dart';
 
+// Shopping cart screen
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
 
@@ -14,10 +15,12 @@ class CartScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
+    // Empty cart view
     if (cartProvider.isEmpty) {
       return Scaffold(
-        backgroundColor:
-            isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+        backgroundColor: isDark
+            ? const Color(0xFF0F172A)
+            : const Color(0xFFF8FAFC),
         appBar: AppBar(
           title: const Text(
             'Shopping Cart',
@@ -63,9 +66,11 @@ class CartScreen extends StatelessWidget {
       );
     }
 
+    // Cart item list and checkout button
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      backgroundColor: isDark
+          ? const Color(0xFF0F172A)
+          : const Color(0xFFF8FAFC),
       appBar: AppBar(
         title: Text(
           'My Cart (${cartProvider.totalItemsCount})',
@@ -122,6 +127,7 @@ class CartScreen extends StatelessWidget {
                           width: 72,
                           height: 72,
                           fit: BoxFit.cover,
+                          cacheWidth: 200,
                           errorBuilder: (_, _, _) => Container(
                             width: 72,
                             height: 72,
@@ -328,9 +334,7 @@ class CartScreen extends StatelessWidget {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(
-                      alpha: isDark ? 0.3 : 0.08,
-                    ),
+                    color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
                     blurRadius: 18,
                     offset: const Offset(0, -4),
                   ),
@@ -392,6 +396,7 @@ class CartScreen extends StatelessWidget {
     );
   }
 
+  // Order breakdown row
   Widget _summaryRow(
     BuildContext context,
     String label,
@@ -429,6 +434,7 @@ class CartScreen extends StatelessWidget {
     );
   }
 
+  // Clear cart confirmation dialog
   void _confirmClearDialog(BuildContext context, CartProvider cartProvider) {
     showDialog(
       context: context,

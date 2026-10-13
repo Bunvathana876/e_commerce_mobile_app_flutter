@@ -46,6 +46,7 @@ class CategoryCard extends StatelessWidget {
                         ? Image.network(
                             category.imageUrl,
                             fit: BoxFit.cover,
+                            cacheWidth: 350,
                             loadingBuilder: (context, child, progress) {
                               if (progress == null) {
                                 return child;

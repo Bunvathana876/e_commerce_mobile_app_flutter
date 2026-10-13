@@ -17,6 +17,7 @@ class AddressModel {
     this.isDefault = false,
   });
 
+  // Clone address with updated default flag
   AddressModel copyWith({bool? isDefault}) {
     return AddressModel(
       id: id,

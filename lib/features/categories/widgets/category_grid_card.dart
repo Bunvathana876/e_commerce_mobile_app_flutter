@@ -61,10 +61,9 @@ class CategoryGridCard extends StatelessWidget {
                 Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: 14,
-                  color:
-                      isDark
-                          ? const Color(0xFF64748B)
-                          : const Color(0xFF94A3B8),
+                  color: isDark
+                      ? const Color(0xFF64748B)
+                      : const Color(0xFF94A3B8),
                 ),
               ],
             ),
@@ -90,8 +89,7 @@ class CategoryGridCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color:
-                        isDark ? Colors.grey.shade400 : Colors.grey.shade500,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
                   ),
                 ),
               ],

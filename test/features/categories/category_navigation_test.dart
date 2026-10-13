@@ -18,11 +18,7 @@ void main() {
             ChangeNotifierProvider(create: (_) => ProductProvider()),
             ChangeNotifierProvider(create: (_) => CartProvider()),
           ],
-          child: const MaterialApp(
-            home: Scaffold(
-              body: CategoriesScreen(),
-            ),
-          ),
+          child: const MaterialApp(home: Scaffold(body: CategoriesScreen())),
         ),
       );
 
@@ -65,11 +61,7 @@ void main() {
             ChangeNotifierProvider(create: (_) => ProductProvider()),
             ChangeNotifierProvider(create: (_) => CartProvider()),
           ],
-          child: const MaterialApp(
-            home: Scaffold(
-              body: CategoriesScreen(),
-            ),
-          ),
+          child: const MaterialApp(home: Scaffold(body: CategoriesScreen())),
         ),
       );
 
@@ -89,4 +81,3 @@ void main() {
     },
   );
 }
-

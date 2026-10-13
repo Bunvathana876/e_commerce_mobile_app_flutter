@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/product_model.dart';
 import '../../../../shared/widgets/bouncing_button.dart';
 
+// Card widget displaying product image, price, rating, and actions in grid views.
 class ProductCard extends StatelessWidget {
   final ProductModel product;
   final VoidCallback onTap;
@@ -43,7 +44,7 @@ class ProductCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. Image Thumbnail with Hero Animation
+            // Thumbnail with discount badge and favorite button
             Stack(
               children: [
                 ClipRRect(
@@ -57,6 +58,7 @@ class ProductCard extends StatelessWidget {
                       child: Image.network(
                         product.imageUrl,
                         fit: BoxFit.cover,
+                        cacheWidth: 450,
                         loadingBuilder: (context, child, progress) {
                           if (progress == null) return child;
                           return Container(
@@ -129,8 +131,8 @@ class ProductCard extends StatelessWidget {
                         color: product.isFavorite
                             ? const Color(0xFFEF4444)
                             : (isDark
-                                ? Colors.grey.shade400
-                                : Colors.grey.shade500),
+                                  ? Colors.grey.shade400
+                                  : Colors.grey.shade500),
                       ),
                     ),
                   ),
@@ -138,7 +140,7 @@ class ProductCard extends StatelessWidget {
               ],
             ),
 
-            // 2. Product Details
+            // Product title, rating, price, and add-to-cart button
             Padding(
               padding: const EdgeInsets.all(10),
               child: Column(

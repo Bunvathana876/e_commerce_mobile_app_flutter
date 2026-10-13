@@ -25,6 +25,7 @@ class ProductModel {
     this.isFavorite = false,
   });
 
+  // Clone product with updated attributes
   ProductModel copyWith({bool? isFavorite}) {
     return ProductModel(
       id: id,
@@ -39,5 +40,41 @@ class ProductModel {
       imageUrl: imageUrl,
       isFavorite: isFavorite ?? this.isFavorite,
     );
+  }
+
+  // Parse product from JSON map
+  factory ProductModel.fromJson(Map<String, dynamic> json) {
+    return ProductModel(
+      id: json['id'] as int,
+      name: json['name'] as String,
+      description: json['description'] as String? ?? '',
+      price: (json['price'] as num).toDouble(),
+      originalPrice: json['original_price'] != null
+          ? (json['original_price'] as num).toDouble()
+          : null,
+      discountPercent: json['discount_percent'] as int? ?? 0,
+      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
+      reviewCount: json['review_count'] as int? ?? 0,
+      categoryId: json['category_id'] as int? ?? 1,
+      imageUrl: json['image_url'] as String? ?? '',
+      isFavorite: json['is_favorite'] as bool? ?? false,
+    );
+  }
+
+  // Convert product to JSON map
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'price': price,
+      'original_price': originalPrice,
+      'discount_percent': discountPercent,
+      'rating': rating,
+      'review_count': reviewCount,
+      'category_id': categoryId,
+      'image_url': imageUrl,
+      'is_favorite': isFavorite,
+    };
   }
 }

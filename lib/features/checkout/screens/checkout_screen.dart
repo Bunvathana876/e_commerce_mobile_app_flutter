@@ -6,6 +6,7 @@ import '../../cart/providers/cart_provider.dart';
 import '../models/address_model.dart';
 import 'order_success_screen.dart';
 
+// Handles checkout address selection, shipping, payment methods, and order placement.
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
 
@@ -109,7 +110,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF475569) : Colors.grey.shade300,
+                      color: isDark
+                          ? const Color(0xFF475569)
+                          : Colors.grey.shade300,
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -138,13 +141,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? const Color(0xFF1E88E5).withValues(alpha: isDark ? 0.2 : 0.06)
+                            ? const Color(
+                                0xFF1E88E5,
+                              ).withValues(alpha: isDark ? 0.2 : 0.06)
                             : (isDark ? const Color(0xFF0F172A) : Colors.white),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
                           color: isSelected
                               ? const Color(0xFF1E88E5)
-                              : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
+                              : (isDark
+                                    ? const Color(0xFF334155)
+                                    : const Color(0xFFE2E8F0)),
                           width: isSelected ? 2 : 1,
                         ),
                       ),
@@ -156,7 +163,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 : Icons.radio_button_off,
                             color: isSelected
                                 ? const Color(0xFF1E88E5)
-                                : (isDark ? const Color(0xFF64748B) : Colors.grey.shade400),
+                                : (isDark
+                                      ? const Color(0xFF64748B)
+                                      : Colors.grey.shade400),
                             size: 20,
                           ),
                           const SizedBox(width: 12),
@@ -171,7 +180,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w800,
-                                        color: isDark ? Colors.white : const Color(0xFF0F172A),
+                                        color: isDark
+                                            ? Colors.white
+                                            : const Color(0xFF0F172A),
                                       ),
                                     ),
                                     if (addr.isDefault) ...[
@@ -183,7 +194,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                         ),
                                         decoration: BoxDecoration(
                                           color: isDark
-                                              ? const Color(0xFF0369A1).withValues(alpha: 0.35)
+                                              ? const Color(
+                                                  0xFF0369A1,
+                                                ).withValues(alpha: 0.35)
                                               : const Color(0xFFE0F2FE),
                                           borderRadius: BorderRadius.circular(
                                             6,
@@ -208,7 +221,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   '${addr.recipientName} (${addr.phoneNumber})',
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                                    color: isDark
+                                        ? Colors.grey.shade400
+                                        : Colors.grey.shade600,
                                   ),
                                 ),
                                 const SizedBox(height: 2),
@@ -216,7 +231,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   '${addr.streetAddress}, ${addr.city}',
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: isDark ? Colors.grey.shade300 : const Color(0xFF334155),
+                                    color: isDark
+                                        ? Colors.grey.shade300
+                                        : const Color(0xFF334155),
                                   ),
                                 ),
                               ],
@@ -275,8 +292,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     final finalGrandTotal = cartProvider.subtotal + shippingCost;
 
     return Scaffold(
-      backgroundColor:
-          isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+      backgroundColor: isDark
+          ? const Color(0xFF0F172A)
+          : const Color(0xFFF8FAFC),
       appBar: AppBar(
         title: Text(
           'Checkout',
@@ -296,11 +314,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       ),
       body: Stack(
         children: [
-          // 1. Scrollable Checkout Details
+          // Scrollable checkout details
           ListView(
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 130),
             children: [
-              // --- Section 1: Delivery Address ---
+              // Delivery address
               _buildSectionHeader('Delivery Address', isDark: isDark),
               const SizedBox(height: 8),
               Container(
@@ -309,10 +327,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   color: isDark ? const Color(0xFF1E293B) : Colors.white,
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(
-                    color:
-                        isDark
-                            ? const Color(0xFF334155)
-                            : const Color(0xFFF1F5F9),
+                    color: isDark
+                        ? const Color(0xFF334155)
+                        : const Color(0xFFF1F5F9),
                     width: 1.2,
                   ),
                   boxShadow: [
@@ -354,10 +371,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w800,
-                                  color:
-                                      isDark
-                                          ? Colors.white
-                                          : const Color(0xFF0F172A),
+                                  color: isDark
+                                      ? Colors.white
+                                      : const Color(0xFF0F172A),
                                 ),
                               ),
                               const SizedBox(width: 6),
@@ -365,10 +381,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 '• ${_selectedAddress.recipientName}',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color:
-                                      isDark
-                                          ? Colors.grey.shade400
-                                          : Colors.grey.shade600,
+                                  color: isDark
+                                      ? Colors.grey.shade400
+                                      : Colors.grey.shade600,
                                 ),
                               ),
                             ],
@@ -378,10 +393,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             _selectedAddress.phoneNumber,
                             style: TextStyle(
                               fontSize: 12,
-                              color:
-                                  isDark
-                                      ? Colors.grey.shade400
-                                      : Colors.grey.shade500,
+                              color: isDark
+                                  ? Colors.grey.shade400
+                                  : Colors.grey.shade500,
                             ),
                           ),
                           const SizedBox(height: 2),
@@ -389,10 +403,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             '${_selectedAddress.streetAddress}, ${_selectedAddress.city}',
                             style: TextStyle(
                               fontSize: 13,
-                              color:
-                                  isDark
-                                      ? Colors.grey.shade300
-                                      : const Color(0xFF334155),
+                              color: isDark
+                                  ? Colors.grey.shade300
+                                  : const Color(0xFF334155),
                               height: 1.3,
                             ),
                           ),
@@ -415,7 +428,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               ),
               const SizedBox(height: 20),
 
-              // --- Section 2: Shipping Method ---
+              // Shipping method
               _buildSectionHeader('Shipping Method', isDark: isDark),
               const SizedBox(height: 8),
               ...List.generate(_shippingMethods.length, (index) {
@@ -432,12 +445,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       color: isDark ? const Color(0xFF1E293B) : Colors.white,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color:
-                            isSelected
-                                ? const Color(0xFF1E88E5)
-                                : (isDark
-                                    ? const Color(0xFF334155)
-                                    : const Color(0xFFE2E8F0)),
+                        color: isSelected
+                            ? const Color(0xFF1E88E5)
+                            : (isDark
+                                  ? const Color(0xFF334155)
+                                  : const Color(0xFFE2E8F0)),
                         width: isSelected ? 1.8 : 1,
                       ),
                     ),
@@ -447,12 +459,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           isSelected
                               ? Icons.radio_button_checked
                               : Icons.radio_button_off,
-                          color:
-                              isSelected
-                                  ? const Color(0xFF1E88E5)
-                                  : (isDark
-                                      ? const Color(0xFF64748B)
-                                      : Colors.grey.shade400),
+                          color: isSelected
+                              ? const Color(0xFF1E88E5)
+                              : (isDark
+                                    ? const Color(0xFF64748B)
+                                    : Colors.grey.shade400),
                           size: 20,
                         ),
                         const SizedBox(width: 12),
@@ -465,20 +476,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
-                                  color:
-                                      isDark
-                                          ? Colors.white
-                                          : const Color(0xFF0F172A),
+                                  color: isDark
+                                      ? Colors.white
+                                      : const Color(0xFF0F172A),
                                 ),
                               ),
                               Text(
                                 method['subtitle'] as String,
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color:
-                                      isDark
-                                          ? Colors.grey.shade400
-                                          : Colors.grey.shade500,
+                                  color: isDark
+                                      ? Colors.grey.shade400
+                                      : Colors.grey.shade500,
                                 ),
                               ),
                             ],
@@ -491,12 +500,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w800,
-                            color:
-                                price == 0.0
-                                    ? const Color(0xFF10B981)
-                                    : (isDark
-                                        ? Colors.white
-                                        : const Color(0xFF0F172A)),
+                            color: price == 0.0
+                                ? const Color(0xFF10B981)
+                                : (isDark
+                                      ? Colors.white
+                                      : const Color(0xFF0F172A)),
                           ),
                         ),
                       ],
@@ -506,7 +514,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               }),
               const SizedBox(height: 14),
 
-              // --- Section 3: Payment Method ---
+              // Payment method
               _buildSectionHeader('Payment Method', isDark: isDark),
               const SizedBox(height: 8),
               ...List.generate(_paymentMethods.length, (index) {
@@ -522,12 +530,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       color: isDark ? const Color(0xFF1E293B) : Colors.white,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color:
-                            isSelected
-                                ? const Color(0xFF1E88E5)
-                                : (isDark
-                                    ? const Color(0xFF334155)
-                                    : const Color(0xFFE2E8F0)),
+                        color: isSelected
+                            ? const Color(0xFF1E88E5)
+                            : (isDark
+                                  ? const Color(0xFF334155)
+                                  : const Color(0xFFE2E8F0)),
                         width: isSelected ? 1.8 : 1,
                       ),
                     ),
@@ -537,12 +544,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           isSelected
                               ? Icons.radio_button_checked
                               : Icons.radio_button_off,
-                          color:
-                              isSelected
-                                  ? const Color(0xFF1E88E5)
-                                  : (isDark
-                                      ? const Color(0xFF64748B)
-                                      : Colors.grey.shade400),
+                          color: isSelected
+                              ? const Color(0xFF1E88E5)
+                              : (isDark
+                                    ? const Color(0xFF64748B)
+                                    : Colors.grey.shade400),
                           size: 20,
                         ),
                         const SizedBox(width: 12),
@@ -570,20 +576,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
-                                  color:
-                                      isDark
-                                          ? Colors.white
-                                          : const Color(0xFF0F172A),
+                                  color: isDark
+                                      ? Colors.white
+                                      : const Color(0xFF0F172A),
                                 ),
                               ),
                               Text(
                                 pay['subtitle'] as String,
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color:
-                                      isDark
-                                          ? Colors.grey.shade400
-                                          : Colors.grey.shade500,
+                                  color: isDark
+                                      ? Colors.grey.shade400
+                                      : Colors.grey.shade500,
                                 ),
                               ),
                             ],
@@ -596,7 +600,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               }),
               const SizedBox(height: 14),
 
-              // --- Section 4: Cost Breakdown ---
+              // Order summary
               _buildSectionHeader('Order Summary', isDark: isDark),
               const SizedBox(height: 8),
               Container(
@@ -605,10 +609,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   color: isDark ? const Color(0xFF1E293B) : Colors.white,
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(
-                    color:
-                        isDark
-                            ? const Color(0xFF334155)
-                            : const Color(0xFFF1F5F9),
+                    color: isDark
+                        ? const Color(0xFF334155)
+                        : const Color(0xFFF1F5F9),
                   ),
                 ),
                 child: Column(
@@ -624,18 +627,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       shippingCost == 0.0
                           ? 'FREE'
                           : '\$${shippingCost.toStringAsFixed(2)}',
-                      valueColor:
-                          shippingCost == 0.0
-                              ? const Color(0xFF10B981)
-                              : null,
+                      valueColor: shippingCost == 0.0
+                          ? const Color(0xFF10B981)
+                          : null,
                       isDark: isDark,
                     ),
                     Divider(
                       height: 20,
-                      color:
-                          isDark
-                              ? const Color(0xFF334155)
-                              : const Color(0xFFF1F5F9),
+                      color: isDark
+                          ? const Color(0xFF334155)
+                          : const Color(0xFFF1F5F9),
                     ),
                     _priceRow(
                       'Total Amount',
@@ -649,7 +650,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             ],
           ),
 
-          // 2. Sticky Bottom Action Bar
+          // Sticky bottom action bar
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -661,18 +662,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ),
                 border: Border(
                   top: BorderSide(
-                    color:
-                        isDark
-                            ? const Color(0xFF334155)
-                            : const Color(0xFFF1F5F9),
+                    color: isDark
+                        ? const Color(0xFF334155)
+                        : const Color(0xFFF1F5F9),
                     width: 1.2,
                   ),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(
-                      alpha: isDark ? 0.35 : 0.08,
-                    ),
+                    color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.08),
                     blurRadius: 18,
                     offset: const Offset(0, -4),
                   ),
@@ -681,10 +679,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               child: SafeArea(
                 top: false,
                 child: BouncingButton(
-                  onTap:
-                      _isPlacingOrder
-                          ? null
-                          : () => _handlePlaceOrder(cartProvider),
+                  onTap: _isPlacingOrder
+                      ? null
+                      : () => _handlePlaceOrder(cartProvider),
                   child: Container(
                     height: 52,
                     decoration: BoxDecoration(
@@ -701,35 +698,34 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       ],
                     ),
                     alignment: Alignment.center,
-                    child:
-                        _isPlacingOrder
-                            ? const SizedBox(
-                              width: 22,
-                              height: 22,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.5,
-                                color: Colors.white,
-                              ),
-                            )
-                            : Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.lock_outline_rounded,
-                                  color: Colors.white,
-                                  size: 18,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  'Pay • \$${finalGrandTotal.toStringAsFixed(2)}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                ),
-                              ],
+                    child: _isPlacingOrder
+                        ? const SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              color: Colors.white,
                             ),
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.lock_outline_rounded,
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Pay • \$${finalGrandTotal.toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ],
+                          ),
                   ),
                 ),
               ),
@@ -766,12 +762,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           style: TextStyle(
             fontSize: isBold ? 15 : 13,
             fontWeight: isBold ? FontWeight.w800 : FontWeight.w500,
-            color:
-                isBold
-                    ? (isDark ? Colors.white : const Color(0xFF0F172A))
-                    : (isDark
-                        ? Colors.grey.shade400
-                        : const Color(0xFF64748B)),
+            color: isBold
+                ? (isDark ? Colors.white : const Color(0xFF0F172A))
+                : (isDark ? Colors.grey.shade400 : const Color(0xFF64748B)),
           ),
         ),
         Text(
