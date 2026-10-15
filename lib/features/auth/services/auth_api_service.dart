@@ -19,12 +19,13 @@ class AuthApiService {
         'email': email,
         'password': password,
       },
-      parser: (data) => data as Map<String, dynamic>,
+      parser: (data) => Map<String, dynamic>.from(data as Map),
     );
 
     final data = response.data ?? {};
     final token = data['token'] ?? data['access_token'];
     if (token != null) {
+      data['token'] = token;
       _client.setAuthToken(token.toString());
     }
 
@@ -40,16 +41,18 @@ class AuthApiService {
     final response = await _client.post<Map<String, dynamic>>(
       ApiEndpoints.register,
       body: {
+        'name': fullName,
         'full_name': fullName,
         'email': email,
         'password': password,
       },
-      parser: (data) => data as Map<String, dynamic>,
+      parser: (data) => Map<String, dynamic>.from(data as Map),
     );
 
     final data = response.data ?? {};
     final token = data['token'] ?? data['access_token'];
     if (token != null) {
+      data['token'] = token;
       _client.setAuthToken(token.toString());
     }
 

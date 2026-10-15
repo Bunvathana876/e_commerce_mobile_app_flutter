@@ -33,7 +33,7 @@ class CartItemModel {
       product: json['product'] != null
           ? ProductModel.fromJson(json['product'] as Map<String, dynamic>)
           : ProductModel(
-              id: json['product_id'] as int? ?? 0,
+              id: (json['product_id'] as num?)?.toInt() ?? 0,
               name: json['product_name'] as String? ?? 'Product',
               description: '',
               price: (json['price'] as num?)?.toDouble() ?? 0.0,
@@ -43,7 +43,7 @@ class CartItemModel {
               imageUrl: json['image_url'] as String? ?? '',
             ),
       variant: json['variant'] as String? ?? 'Standard',
-      quantity: json['quantity'] as int? ?? 1,
+      quantity: (json['quantity'] as num?)?.toInt() ?? 1,
     );
   }
 

@@ -16,11 +16,11 @@ class UserModel {
   // Parse user from JSON map
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['id'] as int,
-      email: json['email'] as String,
-      fullName: json['full_name'] as String,
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      email: json['email'] as String? ?? '',
+      fullName: (json['full_name'] ?? json['name'] ?? '') as String,
       role: json['role'] as String? ?? 'customer',
-      avatarUrl: json['avatar_url'] as String?,
+      avatarUrl: (json['avatar_url'] ?? json['avatar']) as String?,
     );
   }
 

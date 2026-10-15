@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
+import '../../../../shared/widgets/bouncing_button.dart';
 import '../models/category_model.dart';
 
 class CategoryCard extends StatelessWidget {
@@ -11,22 +13,22 @@ class CategoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return GestureDetector(
+    return BouncingButton(
       onTap: onTap,
-      behavior: HitTestBehavior.opaque,
+      scaleFactor: 0.97,
       child: Container(
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E293B) : Colors.white,
-          borderRadius: BorderRadius.circular(18),
+          color: isDark ? const Color(0xFF161F30) : Colors.white,
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+            color: isDark ? const Color(0xFF253248) : const Color(0xFFE2E8F0),
             width: 1.2,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
+              color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.04),
+              blurRadius: 14,
+              offset: const Offset(0, 3),
             ),
           ],
         ),
@@ -38,7 +40,7 @@ class CategoryCard extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(18),
+                    top: Radius.circular(19),
                   ),
                   child: AspectRatio(
                     aspectRatio: 1.45,
@@ -51,18 +53,17 @@ class CategoryCard extends StatelessWidget {
                               if (progress == null) {
                                 return child;
                               }
-                              return Container(
-                                color: isDark
-                                    ? const Color(0xFF0F172A)
-                                    : const Color(0xFFF8FAFC),
-                                child: const Center(
-                                  child: SizedBox(
-                                    width: 16,
-                                    height: 16,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  ),
+                              return Shimmer.fromColors(
+                                baseColor: isDark
+                                    ? const Color(0xFF1E293B)
+                                    : const Color(0xFFF1F5F9),
+                                highlightColor: isDark
+                                    ? const Color(0xFF334155)
+                                    : const Color(0xFFFFFFFF),
+                                child: Container(
+                                  color: isDark
+                                      ? const Color(0xFF1E293B)
+                                      : const Color(0xFFF1F5F9),
                                 ),
                               );
                             },
@@ -98,9 +99,15 @@ class CategoryCard extends StatelessWidget {
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
                       color: isDark
-                          ? const Color(0xFF334155)
-                          : Colors.white.withValues(alpha: 0.92),
+                          ? const Color(0xFF1E293B)
+                          : Colors.white.withValues(alpha: 0.95),
                       shape: BoxShape.circle,
+                      border: Border.all(
+                        color: isDark
+                            ? const Color(0xFF334155)
+                            : const Color(0xFFE2E8F0),
+                        width: 0.8,
+                      ),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(
@@ -150,7 +157,7 @@ class CategoryCard extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: isDark
-                              ? const Color(0xFF334155)
+                              ? const Color(0xFF253248)
                               : const Color(0xFFF1F5F9),
                           borderRadius: BorderRadius.circular(8),
                         ),

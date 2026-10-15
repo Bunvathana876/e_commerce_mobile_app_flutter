@@ -1,15 +1,34 @@
 import 'package:flutter/material.dart';
+import '../../../core/network/api_client.dart';
+import '../../../core/network/api_response.dart';
 import '../models/category_model.dart';
 import '../models/product_model.dart';
+import '../services/product_api_service.dart';
 
 // Manages catalog products, categories, search filtering, and favorites.
 class ProductProvider extends ChangeNotifier {
+  final ProductApiService _productApiService;
+  bool _isBackendConnected = false;
+  bool _isLoading = false;
+  String? _errorMessage;
+
+  bool get isBackendConnected => _isBackendConnected;
+  bool get isLoading => _isLoading;
+  String? get errorMessage => _errorMessage;
+
+  ProductProvider({ProductApiService? productApiService})
+      : _productApiService = productApiService ?? ProductApiService() {
+    loadFromBackend();
+  }
+
   // Filter state
   int _selectedCategoryId = 0; // 0 represents all items
   String _searchQuery = '';
+  String _sortBy = 'default'; // 'default', 'price_low', 'price_high', 'rating'
 
   int get selectedCategoryId => _selectedCategoryId;
   String get searchQuery => _searchQuery;
+  String get sortBy => _sortBy;
 
   // Category definitions
   final List<CategoryModel> _categories = const [
@@ -69,7 +88,7 @@ class ProductProvider extends ChangeNotifier {
       reviewCount: 142,
       categoryId: 1,
       imageUrl:
-          'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500&q=80',
+          'https://nick-howto-bowl-cute.trycloudflare.com/images/5bb19765af44.jpg',
     ),
     const ProductModel(
       id: 103,
@@ -416,7 +435,7 @@ class ProductProvider extends ChangeNotifier {
 
   // Filter products by selected category and search query
   List<ProductModel> get filteredProducts {
-    return _products.where((item) {
+    final list = _products.where((item) {
       final matchesCategory =
           _selectedCategoryId == 0 || item.categoryId == _selectedCategoryId;
       final matchesQuery =
@@ -424,6 +443,16 @@ class ProductProvider extends ChangeNotifier {
           item.name.toLowerCase().contains(_searchQuery.toLowerCase());
       return matchesCategory && matchesQuery;
     }).toList();
+
+    if (_sortBy == 'price_low') {
+      list.sort((a, b) => a.price.compareTo(b.price));
+    } else if (_sortBy == 'price_high') {
+      list.sort((a, b) => b.price.compareTo(a.price));
+    } else if (_sortBy == 'rating') {
+      list.sort((a, b) => b.rating.compareTo(a.rating));
+    }
+
+    return list;
   }
 
   // Slice of products to display in the grid
@@ -477,6 +506,50 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setSortBy(String sort) {
+    if (_sortBy == sort) return;
+    _sortBy = sort;
+    _displayedCount = _pageSize;
+    _isLoadingMore = false;
+    notifyListeners();
+  }
+
+  void resetFilters() {
+    _selectedCategoryId = 0;
+    _searchQuery = '';
+    _sortBy = 'default';
+    _displayedCount = _pageSize;
+    _isLoadingMore = false;
+    notifyListeners();
+  }
+
+  // Fetch catalog from remote backend API with fallback preservation
+  Future<void> loadFromBackend({bool force = false}) async {
+    _isLoading = true;
+    try {
+      final remoteProducts = await _productApiService.getProducts(limit: 50);
+      if (remoteProducts.isNotEmpty) {
+        final favIds = _products
+            .where((p) => p.isFavorite)
+            .map((p) => p.id)
+            .toSet();
+        _products = remoteProducts.map((p) {
+          if (favIds.contains(p.id)) {
+            return p.copyWith(isFavorite: true);
+          }
+          return p;
+        }).toList();
+        _isBackendConnected = true;
+        _errorMessage = null;
+      }
+    } catch (e) {
+      debugPrint('ProductProvider fallback to local products: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   // Toggle wishlist state for a product
   void toggleFavorite(int productId) {
     _products = _products.map((item) {
@@ -486,5 +559,15 @@ class ProductProvider extends ChangeNotifier {
       return item;
     }).toList();
     notifyListeners();
+
+    // If authenticated with backend, sync in background
+    if (ApiClient.instance.isAuthenticated) {
+      ApiClient.instance
+          .post<dynamic>('/api/v1/favorites/$productId/toggle')
+          .catchError((e) {
+            debugPrint('Failed to sync favorite with backend: $e');
+            return const ApiResponse<dynamic>(success: false);
+          });
+    }
   }
 }

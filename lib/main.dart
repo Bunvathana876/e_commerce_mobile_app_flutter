@@ -5,6 +5,7 @@ import 'app/app.dart';
 import 'features/auth/providers/auth_provider.dart';
 import 'features/cart/providers/cart_provider.dart';
 import 'features/categories/providers/category_provider.dart';
+import 'features/orders/providers/order_provider.dart';
 import 'features/products/providers/product_provider.dart';
 import 'features/profile/settings/providers/theme_provider.dart';
 
@@ -30,6 +31,10 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ProductProvider()),
         // Cart state, item counts, and totals
         ChangeNotifierProvider(create: (_) => CartProvider()),
+        // Order history, active orders, and order status tracking
+        ChangeNotifierProvider(
+          create: (_) => OrderProvider(initialPrefs: prefs),
+        ),
         // Category navigation and department filtering
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
         // Light & dark mode theme state (restores user preference)

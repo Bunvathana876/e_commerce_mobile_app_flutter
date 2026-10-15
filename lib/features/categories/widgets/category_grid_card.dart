@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../shared/widgets/bouncing_button.dart';
 import '../models/category_model.dart';
 
 class CategoryGridCard extends StatelessWidget {
@@ -15,21 +16,21 @@ class CategoryGridCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return GestureDetector(
+    return BouncingButton(
       onTap: onTap,
-      behavior: HitTestBehavior.opaque,
+      scaleFactor: 0.97,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E293B) : Colors.white,
+          color: isDark ? const Color(0xFF161F30) : Colors.white,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+            color: isDark ? const Color(0xFF253248) : const Color(0xFFE2E8F0),
             width: 1.2,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+              color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.04),
               blurRadius: 14,
               offset: const Offset(0, 4),
             ),

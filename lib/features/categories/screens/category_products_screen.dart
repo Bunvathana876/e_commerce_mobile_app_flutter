@@ -6,7 +6,7 @@ import '../../cart/screens/cart_screen.dart';
 import '../../products/models/product_model.dart';
 import '../../products/providers/product_provider.dart';
 import '../../products/screens/product_detail_screen.dart';
-import '../../products/widgets/product_card.dart';
+import '../../products/widgets/product_grid.dart';
 import '../models/category_model.dart';
 
 // Category products listing screen
@@ -75,68 +75,57 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
         : categoryProducts.sublist(0, _displayedCount);
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Stack(
-        children: [
-          // Universal Background Wallpaper
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/bg_all_screens.jpeg',
-              fit: BoxFit.cover,
-            ),
-          ),
-          if (isDark)
-            Positioned.fill(
-              child: Container(
-                color: const Color(0xFF0F172A).withValues(alpha: 0.88),
-              ),
-            ),
-
-          // Content
-          SafeArea(
-            child: NotificationListener<ScrollNotification>(
-              onNotification: (scrollInfo) {
-                _onScroll(scrollInfo, categoryProducts.length);
-                return false;
-              },
-              child: CustomScrollView(
-                slivers: [
-                  // App bar with back button and cart
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-                      child: Row(
-                        children: [
-                          // Back Button
-                          GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            behavior: HitTestBehavior.opaque,
-                            child: Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: isDark
-                                    ? const Color(0xFF1E293B)
-                                    : Colors.white.withValues(alpha: 0.9),
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(
-                                      alpha: isDark ? 0.3 : 0.08,
-                                    ),
-                                    blurRadius: 8,
-                                  ),
-                                ],
-                              ),
-                              child: Icon(
-                                Icons.arrow_back_ios_new_rounded,
-                                size: 18,
-                                color: isDark
-                                    ? Colors.white
-                                    : const Color(0xFF1E293B),
-                              ),
+      backgroundColor: isDark ? const Color(0xFF0B0F19) : const Color(0xFFF8FAFC),
+      body: SafeArea(
+        child: NotificationListener<ScrollNotification>(
+          onNotification: (scrollInfo) {
+            _onScroll(scrollInfo, categoryProducts.length);
+            return false;
+          },
+          child: CustomScrollView(
+            slivers: [
+              // App bar with back button and cart
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                  child: Row(
+                    children: [
+                      // Back Button
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        behavior: HitTestBehavior.opaque,
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? const Color(0xFF161F30)
+                                : Colors.white,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: isDark
+                                  ? const Color(0xFF253248)
+                                  : const Color(0xFFE2E8F0),
                             ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(
+                                  alpha: isDark ? 0.2 : 0.04,
+                                ),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 14),
+                          child: Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            size: 18,
+                            color: isDark
+                                ? Colors.white
+                                : const Color(0xFF1E293B),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 14),
 
                           // Title & Icon
                           Expanded(
@@ -196,15 +185,21 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
                                     color: isDark
-                                        ? const Color(0xFF1E293B)
-                                        : Colors.white.withValues(alpha: 0.9),
+                                        ? const Color(0xFF161F30)
+                                        : Colors.white,
                                     shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: isDark
+                                          ? const Color(0xFF253248)
+                                          : const Color(0xFFE2E8F0),
+                                    ),
                                     boxShadow: [
                                       BoxShadow(
                                         color: Colors.black.withValues(
-                                          alpha: isDark ? 0.3 : 0.08,
+                                          alpha: isDark ? 0.2 : 0.04,
                                         ),
                                         blurRadius: 8,
+                                        offset: const Offset(0, 2),
                                       ),
                                     ],
                                   ),
@@ -256,12 +251,12 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                       child: Container(
                         decoration: BoxDecoration(
                           color: isDark
-                              ? const Color(0xFF1E293B)
+                              ? const Color(0xFF161F30)
                               : Colors.white,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
                             color: isDark
-                                ? const Color(0xFF334155)
+                                ? const Color(0xFF253248)
                                 : const Color(0xFFE2E8F0),
                           ),
                           boxShadow: [
@@ -270,6 +265,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                                 alpha: isDark ? 0.2 : 0.03,
                               ),
                               blurRadius: 10,
+                              offset: const Offset(0, 2),
                             ),
                           ],
                         ),
@@ -376,49 +372,31 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
                       ),
                     )
                   else
-                    SliverPadding(
+                    SliverProductGrid(
                       padding: const EdgeInsets.fromLTRB(20, 6, 20, 28),
-                      sliver: SliverGrid(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 0.58,
-                              crossAxisSpacing: 14,
-                              mainAxisSpacing: 14,
+                      products: displayedProducts,
+                      heroTagPrefix: 'cat-product',
+                      onTap: (item) {
+                        Navigator.of(context).push(
+                          SmoothPageRoute(
+                            page: ProductDetailScreen(product: item),
+                          ),
+                        );
+                      },
+                      onToggleFavorite: (id) =>
+                          productProvider.toggleFavorite(id),
+                      onAddToCart: (item) {
+                        cartProvider.addItem(item, quantity: 1);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Added ${item.name} to cart!',
                             ),
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            final item = displayedProducts[index];
-                            return ProductCard(
-                              product: item,
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  SmoothPageRoute(
-                                    page: ProductDetailScreen(product: item),
-                                  ),
-                                );
-                              },
-                              onToggleFavorite: () =>
-                                  productProvider.toggleFavorite(item.id),
-                              onAddToCart: () {
-                                cartProvider.addItem(item, quantity: 1);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'Added ${item.name} to cart!',
-                                    ),
-                                    duration: const Duration(seconds: 1),
-                                    behavior: SnackBarBehavior.floating,
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          childCount: displayedProducts.length,
-                          addAutomaticKeepAlives: false,
-                          addRepaintBoundaries: true,
-                        ),
-                      ),
+                            duration: const Duration(seconds: 1),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                      },
                     ),
 
                   // Loading spinner for next page
@@ -478,8 +456,6 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
               ),
             ),
           ),
-        ],
-      ),
     );
   }
 }

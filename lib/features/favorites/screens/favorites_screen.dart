@@ -5,7 +5,7 @@ import '../../../shared/widgets/bouncing_button.dart';
 import '../../cart/providers/cart_provider.dart';
 import '../../products/providers/product_provider.dart';
 import '../../products/screens/product_detail_screen.dart';
-import '../../products/widgets/product_card.dart';
+import '../../products/widgets/product_grid.dart';
 
 // Displays the user's saved items or an empty state when none are added.
 class FavoritesScreen extends StatelessWidget {
@@ -37,26 +37,50 @@ class FavoritesScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(24),
+                  width: 108,
+                  height: 108,
                   decoration: BoxDecoration(
-                    color: const Color(
-                      0xFFEF4444,
-                    ).withValues(alpha: isDark ? 0.2 : 0.1),
+                    color: const Color(0xFFEF4444).withValues(alpha: isDark ? 0.18 : 0.08),
                     shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFEF4444).withValues(alpha: isDark ? 0.2 : 0.12),
+                        blurRadius: 24,
+                        offset: const Offset(0, 8),
+                      ),
+                    ],
                   ),
-                  child: const Icon(
-                    Icons.favorite_outline_rounded,
-                    size: 72,
-                    color: Color(0xFFEF4444),
+                  child: Center(
+                    child: Container(
+                      width: 76,
+                      height: 76,
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Color(0xFFF87171),
+                            Color(0xFFEF4444),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.favorite_rounded,
+                        size: 40,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 24),
                 Text(
                   'Your wishlist is empty',
                   style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w900,
                     color: isDark ? Colors.white : const Color(0xFF0F172A),
+                    letterSpacing: -0.5,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -66,7 +90,7 @@ class FavoritesScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-                    height: 1.4,
+                    height: 1.45,
                   ),
                 ),
                 const SizedBox(height: 28),
@@ -75,19 +99,26 @@ class FavoritesScreen extends StatelessWidget {
                     onTap: onExplore,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
+                        horizontal: 26,
                         vertical: 14,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1E88E5),
-                        borderRadius: BorderRadius.circular(14),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFF1E88E5),
+                            Color(0xFF1565C0),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
                             color: const Color(
                               0xFF1E88E5,
-                            ).withValues(alpha: 0.3),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
+                            ).withValues(alpha: 0.35),
+                            blurRadius: 14,
+                            offset: const Offset(0, 5),
                           ),
                         ],
                       ),
@@ -140,54 +171,38 @@ class FavoritesScreen extends StatelessWidget {
       ),
       body: CustomScrollView(
         slivers: [
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-            sliver: SliverGrid(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.58,
-                crossAxisSpacing: 14,
-                mainAxisSpacing: 14,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final item = favorites[index];
-                  return ProductCard(
-                    product: item,
-                    onTap: () {
-                      Navigator.of(context).push(
-                        SmoothPageRoute(
-                          page: ProductDetailScreen(product: item),
-                        ),
-                      );
-                    },
-                    onToggleFavorite: () {
-                      productProvider.toggleFavorite(item.id);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Removed ${item.name} from wishlist'),
-                          duration: const Duration(seconds: 1),
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
-                    },
-                    onAddToCart: () {
-                      cartProvider.addItem(item, quantity: 1);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Added ${item.name} to cart!'),
-                          duration: const Duration(seconds: 1),
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
-                    },
-                  );
-                },
-                childCount: favorites.length,
-                addAutomaticKeepAlives: false,
-                addRepaintBoundaries: true,
-              ),
-            ),
+          SliverProductGrid(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+            products: favorites,
+            heroTagPrefix: 'fav-product',
+            onTap: (item) {
+              Navigator.of(context).push(
+                SmoothPageRoute(
+                  page: ProductDetailScreen(product: item),
+                ),
+              );
+            },
+            onToggleFavorite: (id) {
+              final item = favorites.firstWhere((p) => p.id == id);
+              productProvider.toggleFavorite(id);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Removed ${item.name} from wishlist'),
+                  duration: const Duration(seconds: 1),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            },
+            onAddToCart: (item) {
+              cartProvider.addItem(item, quantity: 1);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Added ${item.name} to cart!'),
+                  duration: const Duration(seconds: 1),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            },
           ),
         ],
       ),

@@ -8,11 +8,18 @@ class ApiEndpoints {
 
   // Active base URL for network requests
   static String _customBaseUrl = '';
+  static const String _envBaseUrl = String.fromEnvironment('API_URL');
 
   // Get current base URL according to platform or custom setting
   static String get baseUrl {
     if (_customBaseUrl.isNotEmpty) {
       return _customBaseUrl;
+    }
+
+    if (_envBaseUrl.isNotEmpty) {
+      return _envBaseUrl.endsWith('/')
+          ? _envBaseUrl.substring(0, _envBaseUrl.length - 1)
+          : _envBaseUrl;
     }
 
     if (kIsWeb) {
@@ -40,6 +47,36 @@ class ApiEndpoints {
   // Reset base URL to platform defaults
   static void resetBaseUrl() {
     _customBaseUrl = '';
+  }
+
+  // Normalize image URLs returned by the backend
+  static String normalizeImageUrl(String? url) {
+    if (url == null || url.trim().isEmpty) return '';
+    final trimmed = url.trim();
+
+    // Already a complete external URL
+    if (trimmed.startsWith('https://') ||
+        (trimmed.startsWith('http://') &&
+            !trimmed.contains('localhost') &&
+            !trimmed.contains('127.0.0.1'))) {
+      return trimmed;
+    }
+
+    // Relative backend path (e.g. /uploads/products/...)
+    if (trimmed.startsWith('/')) {
+      return '$baseUrl$trimmed';
+    }
+
+    // If it points to localhost / 127.0.0.1 (e.g. stored in DB as http://localhost:8000/uploads/...)
+    if (trimmed.contains('localhost:8000') ||
+        trimmed.contains('127.0.0.1:8000')) {
+      final uri = Uri.tryParse(trimmed);
+      if (uri != null) {
+        return '$baseUrl${uri.path}';
+      }
+    }
+
+    return trimmed;
   }
 
   // Network timeouts

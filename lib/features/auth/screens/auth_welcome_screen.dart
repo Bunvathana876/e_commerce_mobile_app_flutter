@@ -199,15 +199,22 @@ class AuthWelcomeScreen extends StatelessWidget {
                     BouncingButton(
                       onTap: () => _navigateToLogin(context),
                       child: Container(
-                        height: 50,
+                        height: 52,
                         decoration: BoxDecoration(
                           color: isDark
                               ? const Color(0xFF0F172A)
                               : Colors.black,
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(16),
                           border: isDark
                               ? Border.all(color: const Color(0xFF334155))
                               : null,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.08),
+                              blurRadius: 10,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
                         ),
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -232,18 +239,25 @@ class AuthWelcomeScreen extends StatelessWidget {
                     BouncingButton(
                       onTap: () => _navigateToLogin(context),
                       child: Container(
-                        height: 50,
+                        height: 52,
                         decoration: BoxDecoration(
                           color: isDark
                               ? const Color(0xFF0F172A)
                               : Colors.white,
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(16),
                           border: Border.all(
                             color: isDark
                                 ? const Color(0xFF334155)
                                 : const Color(0xFFE2E8F0),
                             width: 1.2,
                           ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: isDark ? 0.15 : 0.04),
+                              blurRadius: 10,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -304,12 +318,12 @@ class AuthWelcomeScreen extends StatelessWidget {
                     BouncingButton(
                       onTap: () => _navigateToLogin(context),
                       child: Container(
-                        height: 50,
+                        height: 52,
                         decoration: BoxDecoration(
                           color: isDark
                               ? const Color(0xFF065F46).withValues(alpha: 0.35)
                               : const Color(0xFFE6F4EA),
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(16),
                           border: isDark
                               ? Border.all(
                                   color: const Color(
@@ -317,6 +331,13 @@ class AuthWelcomeScreen extends StatelessWidget {
                                   ).withValues(alpha: 0.5),
                                 )
                               : null,
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF10B981).withValues(alpha: isDark ? 0.1 : 0.08),
+                              blurRadius: 10,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
                         ),
                         alignment: Alignment.center,
                         child: Text(

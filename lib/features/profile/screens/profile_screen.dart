@@ -5,6 +5,8 @@ import '../../../core/utils/page_transitions.dart';
 import '../../../shared/widgets/bouncing_button.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../cart/providers/cart_provider.dart';
+import '../../orders/providers/order_provider.dart';
+import '../../orders/screens/order_history_screen.dart';
 import '../../products/providers/product_provider.dart';
 import '../settings/screens/settings_screen.dart';
 
@@ -24,6 +26,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final authProvider = context.watch<AuthProvider>();
     final productProvider = context.watch<ProductProvider>();
     final cartProvider = context.watch<CartProvider>();
+    OrderProvider? orderProvider;
+    try {
+      orderProvider = context.watch<OrderProvider>();
+    } catch (_) {
+      // In isolated widget tests where OrderProvider might not be injected
+    }
+    final activeOrdersCount = orderProvider?.activeOrdersCount ?? 0;
     final user = authProvider.currentUser;
 
     final displayName = user?.fullName.isNotEmpty == true
@@ -66,17 +75,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF1E293B) : Colors.white,
+              color: isDark ? const Color(0xFF161F30) : Colors.white,
               borderRadius: BorderRadius.circular(22),
               border: Border.all(
                 color: isDark
-                    ? const Color(0xFF334155)
-                    : const Color(0xFFF1F5F9),
+                    ? const Color(0xFF253248)
+                    : const Color(0xFFE2E8F0),
                 width: 1.2,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+                  color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.04),
                   blurRadius: 14,
                   offset: const Offset(0, 4),
                 ),
@@ -229,10 +238,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               _buildStatCard(
                 title: 'Orders',
-                value: '2 Active',
+                value: '$activeOrdersCount Active',
                 icon: Icons.local_shipping_outlined,
                 color: const Color(0xFF1E88E5),
                 isDark: isDark,
+                onTap: () {
+                  Navigator.of(context).push(
+                    SmoothPageRoute(page: const OrderHistoryScreen()),
+                  );
+                },
               ),
               const SizedBox(width: 10),
               _buildStatCard(
@@ -264,27 +278,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
               title: 'My Orders',
               subtitle: 'Track active deliveries & view history',
               isDark: isDark,
-              badge: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF1E88E5),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Text(
-                  '2 Active',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
+              badge: activeOrdersCount > 0
+                  ? Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF1E88E5),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        '$activeOrdersCount Active',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    )
+                  : null,
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Order tracking screen is next!'),
-                    behavior: SnackBarBehavior.floating,
-                  ),
+                Navigator.of(context).push(
+                  SmoothPageRoute(page: const OrderHistoryScreen()),
                 );
               },
             ),
@@ -299,14 +315,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               title: 'Shipping Addresses',
               subtitle: 'Phnom Penh, Cambodia (Default)',
               isDark: isDark,
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Address management coming soon!'),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-              },
+              onTap: () => _showShippingAddressesSheet(context, isDark),
             ),
             Divider(
               height: 1,
@@ -319,14 +328,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               title: 'Payment Methods',
               subtitle: 'ABA KHQR, Visa / Mastercard',
               isDark: isDark,
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Payment methods management coming soon!'),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-              },
+              onTap: () => _showPaymentMethodsSheet(context, isDark),
             ),
           ], isDark),
           const SizedBox(height: 22),
@@ -494,17 +496,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildCardGroup(List<Widget> children, bool isDark) {
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
-        borderRadius: BorderRadius.circular(18),
+        color: isDark ? const Color(0xFF161F30) : Colors.white,
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+          color: isDark ? const Color(0xFF253248) : const Color(0xFFE2E8F0),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.02),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.04),
+            blurRadius: 14,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -524,12 +526,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       leading: Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(9),
         decoration: BoxDecoration(
-          color: iconColor.withValues(alpha: isDark ? 0.2 : 0.12),
-          borderRadius: BorderRadius.circular(12),
+          color: iconColor.withValues(alpha: isDark ? 0.20 : 0.12),
+          borderRadius: BorderRadius.circular(14),
         ),
-        child: Icon(icon, color: iconColor, size: 22),
+        child: Icon(icon, color: iconColor, size: 21),
       ),
       title: Text(
         title,
@@ -569,62 +571,373 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required IconData icon,
     required Color color,
     required bool isDark,
+    VoidCallback? onTap,
   }) {
     return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
-        decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1E293B) : Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
-            width: 1.2,
+      child: BouncingButton(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF161F30) : Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: isDark ? const Color(0xFF253248) : const Color(0xFFE2E8F0),
+              width: 1.2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.04),
+                blurRadius: 12,
+                offset: const Offset(0, 3),
+              ),
+            ],
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.02),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: isDark ? 0.2 : 0.12),
-                shape: BoxShape.circle,
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(7),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: isDark ? 0.20 : 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, size: 17, color: color),
               ),
-              child: Icon(icon, size: 16, color: color),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w800,
-                color: isDark ? Colors.white : const Color(0xFF0F172A),
+              const SizedBox(height: 8),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  value,
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w800,
+                    color: isDark ? Colors.white : const Color(0xFF0F172A),
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w500,
-                color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
+              const SizedBox(height: 2),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
   // Bottom sheets
+
+  void _showShippingAddressesSheet(BuildContext context, bool isDark) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: isDark ? const Color(0xFF161F30) : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? const Color(0xFF334155)
+                        : const Color(0xFFCBD5E1),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF59E0B).withValues(alpha: 0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.location_on_rounded,
+                      color: Color(0xFFF59E0B),
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    'Shipping Addresses',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w800,
+                      color: isDark ? Colors.white : const Color(0xFF0F172A),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              _buildAddressTile(
+                label: 'Home',
+                recipient: 'Bun Vathana (+855 12 345 678)',
+                address: 'Street 271, Sangkat Boeung Tumpun, Phnom Penh, Cambodia',
+                isDefault: true,
+                isDark: isDark,
+              ),
+              const SizedBox(height: 10),
+              _buildAddressTile(
+                label: 'Office',
+                recipient: 'Bun Vathana (+855 98 765 432)',
+                address: 'Russian Blvd, Canadia Bank Tower, 18th Floor, Phnom Penh',
+                isDefault: false,
+                isDark: isDark,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAddressTile({
+    required String label,
+    required String recipient,
+    required String address,
+    required bool isDefault,
+    required bool isDark,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDefault
+              ? const Color(0xFF1E88E5)
+              : (isDark ? const Color(0xFF253248) : const Color(0xFFE2E8F0)),
+          width: isDefault ? 1.5 : 1.0,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                  color: isDark ? Colors.white : const Color(0xFF0F172A),
+                ),
+              ),
+              if (isDefault)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1E88E5).withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: const Text(
+                    'DEFAULT',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF1E88E5),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            recipient,
+            style: TextStyle(
+              fontSize: 12,
+              color: isDark ? Colors.grey.shade400 : const Color(0xFF64748B),
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            address,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: isDark ? Colors.grey.shade300 : const Color(0xFF334155),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showPaymentMethodsSheet(BuildContext context, bool isDark) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: isDark ? const Color(0xFF161F30) : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? const Color(0xFF334155)
+                        : const Color(0xFFCBD5E1),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF10B981).withValues(alpha: 0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.credit_card_rounded,
+                      color: Color(0xFF10B981),
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    'Supported Payment Methods',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w800,
+                      color: isDark ? Colors.white : const Color(0xFF0F172A),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              _buildPaymentMethodTile(
+                icon: Icons.qr_code_2_rounded,
+                title: 'ABA KHQR Pay',
+                subtitle: 'Scan and pay instantly with Bakong / ABA Mobile',
+                status: 'Active',
+                isDark: isDark,
+              ),
+              const SizedBox(height: 10),
+              _buildPaymentMethodTile(
+                icon: Icons.credit_card_outlined,
+                title: 'Credit / Debit Card',
+                subtitle: 'Visa, Mastercard, UnionPay, JCB',
+                status: 'Supported',
+                isDark: isDark,
+              ),
+              const SizedBox(height: 10),
+              _buildPaymentMethodTile(
+                icon: Icons.local_atm_outlined,
+                title: 'Cash on Delivery (COD)',
+                subtitle: 'Pay cash upon receiving your delivery',
+                status: 'Available',
+                isDark: isDark,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPaymentMethodTile({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required String status,
+    required bool isDark,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark ? const Color(0xFF253248) : const Color(0xFFE2E8F0),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: const Color(0xFF1E88E5).withValues(alpha: isDark ? 0.2 : 0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, size: 20, color: const Color(0xFF1E88E5)),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w700,
+                    color: isDark ? Colors.white : const Color(0xFF0F172A),
+                  ),
+                ),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: isDark ? Colors.grey.shade400 : const Color(0xFF64748B),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+            decoration: BoxDecoration(
+              color: const Color(0xFF10B981).withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              status,
+              style: const TextStyle(
+                fontSize: 10.5,
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF10B981),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   void _showAccountSecuritySheet(BuildContext context, bool isDark) {
     showModalBottomSheet(
@@ -919,6 +1232,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             onPressed: () {
               Navigator.pop(ctx);
+              // Clear cached orders from OrderProvider
+              try {
+                Provider.of<OrderProvider>(context, listen: false).clearOrders();
+              } catch (_) {}
               // Clear user state & token
               authProvider.logout();
               // Reset navigation back to Welcome screen

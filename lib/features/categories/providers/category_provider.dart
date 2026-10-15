@@ -1,15 +1,28 @@
 import 'package:flutter/material.dart';
 import '../models/category_model.dart';
+import '../services/category_api_service.dart';
 
 class CategoryProvider extends ChangeNotifier {
+  final CategoryApiService _categoryApiService;
+  bool _isLoading = false;
+  bool _isBackendConnected = false;
+
+  bool get isLoading => _isLoading;
+  bool get isBackendConnected => _isBackendConnected;
+
+  CategoryProvider({CategoryApiService? categoryApiService})
+      : _categoryApiService = categoryApiService ?? CategoryApiService() {
+    loadFromBackend();
+  }
+
   int _selectedCategoryId = 0;
   String _searchQuery = '';
 
   int get selectedCategoryId => _selectedCategoryId;
   String get searchQuery => _searchQuery;
 
-  final List<CategoryModel> _categories = const [
-    CategoryModel(
+  List<CategoryModel> _categories = [
+    const CategoryModel(
       id: 0,
       name: 'All Items',
       icon: '🔥',
@@ -17,6 +30,7 @@ class CategoryProvider extends ChangeNotifier {
       imageUrl:
           'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=600&q=80',
     ),
+
     CategoryModel(
       id: 1,
       name: 'Electronics',
@@ -97,5 +111,32 @@ class CategoryProvider extends ChangeNotifier {
   void setSearchQuery(String query) {
     _searchQuery = query;
     notifyListeners();
+  }
+
+  // Fetch categories from backend API with local fallback
+  Future<void> loadFromBackend() async {
+    _isLoading = true;
+    try {
+      final remoteCategories = await _categoryApiService.getCategories();
+      if (remoteCategories.isNotEmpty) {
+        final hasAll = remoteCategories.any((c) => c.id == 0);
+        _categories = [
+          if (!hasAll)
+            const CategoryModel(
+              id: 0,
+              name: 'All Items',
+              icon: '🔥',
+              itemCount: 25,
+            ),
+          ...remoteCategories,
+        ];
+        _isBackendConnected = true;
+      }
+    } catch (e) {
+      debugPrint('CategoryProvider fallback to local categories: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 }

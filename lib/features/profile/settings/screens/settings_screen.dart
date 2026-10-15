@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/constants/api_endpoints.dart';
+import '../../../../core/network/api_client.dart';
 import '../../../../shared/widgets/bouncing_button.dart';
 import '../providers/theme_provider.dart';
 
@@ -22,69 +24,57 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
     final isDark = themeProvider.isDarkMode;
-    final cardBg = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final cardBg = isDark ? const Color(0xFF161F30) : Colors.white;
     final borderColor = isDark
-        ? const Color(0xFF334155)
-        : const Color(0xFFF1F5F9);
+        ? const Color(0xFF253248)
+        : const Color(0xFFE2E8F0);
     final titleColor = isDark ? Colors.white : const Color(0xFF0F172A);
     final subColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Stack(
-        children: [
-          // Background image with dark mode dimming
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/bg_all_screens.jpeg',
-              fit: BoxFit.cover,
-            ),
-          ),
-          if (isDark)
-            Positioned.fill(
-              child: Container(
-                color: Colors.black.withValues(
-                  alpha: 0.65,
-                ), // Dim background in Dark Mode
-              ),
-            ),
-
-          // Settings content
-          SafeArea(
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+      backgroundColor: isDark ? const Color(0xFF0B0F19) : const Color(0xFFF8FAFC),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+          children: [
+            // Top Custom App Bar
+            Row(
               children: [
-                // Top Custom App Bar
-                Row(
-                  children: [
-                    BouncingButton(
-                      onTap: () => Navigator.pop(context),
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: cardBg.withValues(alpha: 0.9),
-                          shape: BoxShape.circle,
-                          border: Border.all(color: borderColor),
+                BouncingButton(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: cardBg,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: borderColor),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
                         ),
-                        child: Icon(
-                          Icons.arrow_back_ios_new_rounded,
-                          size: 18,
-                          color: titleColor,
-                        ),
-                      ),
+                      ],
                     ),
-                    const SizedBox(width: 14),
-                    Text(
-                      'App Settings',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                        color: titleColor,
-                      ),
+                    child: Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      size: 18,
+                      color: titleColor,
                     ),
-                  ],
+                  ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(width: 14),
+                Text(
+                  'App Settings',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: titleColor,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
 
                 // Appearance and display
                 _buildSectionTitle('Appearance', titleColor),
@@ -370,12 +360,89 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 22),
+
+                // Backend & Network configuration
+                _buildSectionTitle('Backend & Network', titleColor),
+                const SizedBox(height: 8),
+                _buildCardGroup(
+                  cardBg: cardBg,
+                  borderColor: borderColor,
+                  children: [
+                    ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 4,
+                      ),
+                      leading: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: const Color(
+                            0xFF10B981,
+                          ).withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(
+                          Icons.cloud_done_rounded,
+                          color: Color(0xFF10B981),
+                          size: 22,
+                        ),
+                      ),
+                      title: Text(
+                        'FastAPI REST Backend',
+                        style: TextStyle(
+                          fontSize: 14.5,
+                          fontWeight: FontWeight.w700,
+                          color: titleColor,
+                        ),
+                      ),
+                      subtitle: Text(
+                        ApiEndpoints.baseUrl,
+                        style: TextStyle(fontSize: 12, color: subColor),
+                      ),
+                      trailing: TextButton(
+                        onPressed: _testBackendConnection,
+                        child: const Text(
+                          'Test',
+                          style: TextStyle(
+                            color: Color(0xFF1E88E5),
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
-        ],
-      ),
     );
+  }
+
+  Future<void> _testBackendConnection() async {
+    try {
+      final res = await ApiClient.instance.get<Map<String, dynamic>>(
+        '/health',
+        timeout: const Duration(seconds: 4),
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Backend healthy: ${res.data ?? "connected"}'),
+          backgroundColor: const Color(0xFF10B981),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Connection check failed: $e'),
+          backgroundColor: const Color(0xFFEF4444),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   Widget _buildSectionTitle(String title, Color color) {
@@ -393,17 +460,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Container(
       decoration: BoxDecoration(
         color: cardBg,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(color: borderColor, width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 14,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
-      child: Column(children: children),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Column(children: children),
+      ),
     );
   }
 }

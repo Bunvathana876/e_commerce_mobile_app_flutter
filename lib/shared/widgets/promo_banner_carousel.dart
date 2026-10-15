@@ -4,6 +4,7 @@ import 'promo_banner.dart';
 
 // Data model for an individual promotional banner slide.
 class PromoItem {
+  final String? title;
   final String titlePrefix;
   final String highlightText;
   final String titleSuffix;
@@ -19,16 +20,17 @@ class PromoItem {
   final String? badgeText;
 
   const PromoItem({
-    this.titlePrefix = 'Get ',
-    required this.highlightText,
+    this.title,
+    this.titlePrefix = '',
+    this.highlightText = '',
     this.titleSuffix = '',
     this.subtitle = '',
     this.couponCode = '',
-    this.buttonText = 'Order now',
+    this.buttonText = 'Explore',
     this.imageUrl,
     this.assetPath,
     this.onTap,
-    this.accentColor = const Color(0xFF008744),
+    this.accentColor = const Color(0xFF059669),
     this.tag,
     this.tagIcon,
     this.badgeText,
@@ -136,6 +138,7 @@ class _PromoBannerCarouselState extends State<PromoBannerCarousel> {
             final item = widget.items[index];
 
             return PromoBanner(
+              title: item.title,
               titlePrefix: item.titlePrefix,
               highlightText: item.highlightText,
               titleSuffix: item.titleSuffix,

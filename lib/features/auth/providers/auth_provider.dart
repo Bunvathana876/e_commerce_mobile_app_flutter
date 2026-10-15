@@ -80,9 +80,9 @@ class AuthProvider extends ChangeNotifier {
         email: email,
         password: password,
       );
-      _token = response['token'] as String;
+      _token = (response['token'] ?? response['access_token'])?.toString() ?? '';
       _currentUser = UserModel.fromJson(
-        response['user'] as Map<String, dynamic>,
+        Map<String, dynamic>.from(response['user'] as Map),
       );
       ApiClient.instance.setAuthToken(_token!);
 
@@ -118,9 +118,9 @@ class AuthProvider extends ChangeNotifier {
         email: email,
         password: password,
       );
-      _token = response['token'] as String;
+      _token = (response['token'] ?? response['access_token'])?.toString() ?? '';
       _currentUser = UserModel.fromJson(
-        response['user'] as Map<String, dynamic>,
+        Map<String, dynamic>.from(response['user'] as Map),
       );
       ApiClient.instance.setAuthToken(_token!);
 

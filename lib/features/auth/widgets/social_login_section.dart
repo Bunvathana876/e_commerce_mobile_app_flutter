@@ -23,6 +23,8 @@ class SocialLoginSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Column(
       children: [
         // Divider with centered "or"
@@ -31,24 +33,30 @@ class SocialLoginSection extends StatelessWidget {
             Expanded(
               child: Container(
                 height: 1,
-                color: const Color(0xFFE2E8F0),
+                color: isDark
+                    ? const Color(0xFF253248)
+                    : const Color(0xFFE2E8F0),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
                 'or',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
-                  color: Color(0xFF94A3B8),
+                  color: isDark
+                      ? const Color(0xFF64748B)
+                      : const Color(0xFF94A3B8),
                 ),
               ),
             ),
             Expanded(
               child: Container(
                 height: 1,
-                color: const Color(0xFFE2E8F0),
+                color: isDark
+                    ? const Color(0xFF253248)
+                    : const Color(0xFFE2E8F0),
               ),
             ),
           ],
@@ -56,13 +64,15 @@ class SocialLoginSection extends StatelessWidget {
         const SizedBox(height: 18),
 
         // Headline
-        const Text(
+        Text(
           'Join With Your Favourite Social Media Account',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w700,
-            color: Color(0xFF334155),
+            color: isDark
+                ? const Color(0xFF94A3B8)
+                : const Color(0xFF334155),
             letterSpacing: -0.2,
           ),
         ),
@@ -97,10 +107,14 @@ class SocialLoginSection extends StatelessWidget {
             // X / Twitter
             _SocialCard(
               onTap: () => _handleTap(context, 'X'),
-              child: const SizedBox(
+              child: SizedBox(
                 width: 20,
                 height: 20,
-                child: CustomPaint(painter: _XLogoPainter()),
+                child: CustomPaint(
+                  painter: _XLogoPainter(
+                    color: isDark ? Colors.white : const Color(0xFF0F172A),
+                  ),
+                ),
               ),
             ),
             const SizedBox(width: 14),
@@ -108,10 +122,10 @@ class SocialLoginSection extends StatelessWidget {
             // Apple
             _SocialCard(
               onTap: () => _handleTap(context, 'Apple'),
-              child: const Icon(
+              child: Icon(
                 Icons.apple,
                 size: 28,
-                color: Color(0xFF0F172A),
+                color: isDark ? Colors.white : const Color(0xFF0F172A),
               ),
             ),
           ],
@@ -130,18 +144,27 @@ class _SocialCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return BouncingButton(
       onTap: onTap,
       child: Container(
-        width: 56,
-        height: 56,
+        width: 58,
+        height: 58,
         decoration: BoxDecoration(
-          color: const Color(0xFFF8FAFC),
-          borderRadius: BorderRadius.circular(16),
+          color: isDark ? const Color(0xFF161F30) : const Color(0xFFF8FAFC),
+          borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: const Color(0xFFF1F5F9),
-            width: 1.5,
+            color: isDark ? const Color(0xFF253248) : const Color(0xFFE2E8F0),
+            width: 1.2,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         alignment: Alignment.center,
         child: child,
@@ -225,12 +248,13 @@ class _GoogleLogoPainter extends CustomPainter {
 
 // Modern X / Twitter logo painter
 class _XLogoPainter extends CustomPainter {
-  const _XLogoPainter();
+  final Color color;
+  const _XLogoPainter({this.color = const Color(0xFF0F172A)});
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFF0F172A)
+      ..color = color
       ..style = PaintingStyle.fill
       ..isAntiAlias = true;
 

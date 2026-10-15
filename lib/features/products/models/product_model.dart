@@ -1,3 +1,5 @@
+import '../../../core/constants/api_endpoints.dart';
+
 class ProductModel {
   final int id;
   final String name;
@@ -44,19 +46,38 @@ class ProductModel {
 
   // Parse product from JSON map
   factory ProductModel.fromJson(Map<String, dynamic> json) {
+    final rawPrice = (json['price'] as num?)?.toDouble() ?? 0.0;
+    final discountPrice = (json['discount_price'] as num?)?.toDouble();
+    final rawOriginalPrice = (json['original_price'] as num?)?.toDouble();
+
+    double effectivePrice = rawPrice;
+    double? effectiveOriginalPrice = rawOriginalPrice;
+    int discountPct = (json['discount_percent'] as num?)?.toInt() ?? 0;
+
+    if (discountPrice != null && discountPrice > 0 && discountPrice < rawPrice) {
+      effectivePrice = discountPrice;
+      effectiveOriginalPrice = rawPrice;
+      discountPct = (((rawPrice - discountPrice) / rawPrice) * 100).round();
+    } else if (rawOriginalPrice != null && rawOriginalPrice > rawPrice) {
+      discountPct =
+          (((rawOriginalPrice - rawPrice) / rawOriginalPrice) * 100).round();
+    }
+
+    final rawImage =
+        json['image_url'] as String? ?? json['image'] as String? ?? '';
+    final normalizedImage = ApiEndpoints.normalizeImageUrl(rawImage);
+
     return ProductModel(
-      id: json['id'] as int,
-      name: json['name'] as String,
+      id: (json['id'] as num?)?.toInt() ?? 0,
+      name: json['name'] as String? ?? '',
       description: json['description'] as String? ?? '',
-      price: (json['price'] as num).toDouble(),
-      originalPrice: json['original_price'] != null
-          ? (json['original_price'] as num).toDouble()
-          : null,
-      discountPercent: json['discount_percent'] as int? ?? 0,
+      price: effectivePrice,
+      originalPrice: effectiveOriginalPrice,
+      discountPercent: discountPct,
       rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
-      reviewCount: json['review_count'] as int? ?? 0,
-      categoryId: json['category_id'] as int? ?? 1,
-      imageUrl: json['image_url'] as String? ?? '',
+      reviewCount: (json['review_count'] as num?)?.toInt() ?? 0,
+      categoryId: (json['category_id'] as num?)?.toInt() ?? 1,
+      imageUrl: normalizedImage,
       isFavorite: json['is_favorite'] as bool? ?? false,
     );
   }

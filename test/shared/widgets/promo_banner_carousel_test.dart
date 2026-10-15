@@ -55,7 +55,7 @@ void main() {
 
     // Verify initial item is visible
     expect(find.textContaining('40% off', findRichText: true), findsOneWidget);
-    expect(find.textContaining('FIRST40', findRichText: true), findsOneWidget);
+    expect(find.textContaining('FIRST40'), findsNothing);
     expect(find.text('Order now'), findsOneWidget);
 
     // Verify PromoBanner has activeDotIndex = 0 and totalDots = 3
@@ -195,7 +195,7 @@ void main() {
     expect(find.text('HOT'), findsOneWidget);
   });
 
-  testWidgets('Tapping coupon code copies to clipboard and shows SnackBar', (
+  testWidgets('PromoBanner does not render promocode chips keeping UI clean', (
     tester,
   ) async {
     const customItem = PromoItem(
@@ -206,10 +206,27 @@ void main() {
     await tester.pumpWidget(buildCarousel(items: [customItem]));
     await tester.pumpAndSettle();
 
-    // Tap the coupon code chip
-    await tester.tap(find.textContaining('WELCOME10', findRichText: true));
-    await tester.pump(); // Start SnackBar animation
+    // Verify coupon code is not rendered anywhere in the banner UI
+    expect(find.textContaining('WELCOME10'), findsNothing);
+    expect(find.textContaining('Code:'), findsNothing);
+  });
 
-    expect(find.text('Coupon "WELCOME10" copied to clipboard!'), findsOneWidget);
+  testWidgets('Tapping CTA button triggers onTap callback', (
+    tester,
+  ) async {
+    var tapped = false;
+    final customItem = PromoItem(
+      highlightText: '10% off',
+      buttonText: 'Shop now',
+      onTap: () => tapped = true,
+    );
+
+    await tester.pumpWidget(buildCarousel(items: [customItem]));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Shop now'));
+    await tester.pumpAndSettle();
+
+    expect(tapped, isTrue);
   });
 }
